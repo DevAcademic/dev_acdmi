@@ -889,6 +889,96 @@
             color: var(--text-light);
         }
 
+        /* ===== بطاقات التواصل ===== */
+        .contact-teachers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .contact-teacher-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border);
+            text-align: center;
+            padding: 1rem 0.8rem 0.8rem;
+            position: relative;
+        }
+
+        .contact-teacher-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 40px rgba(14, 165, 233, 0.15);
+        }
+
+        .contact-teacher-card .contact-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin: 0 auto 0.5rem;
+            overflow: hidden;
+            border: 3px solid var(--primary);
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .contact-teacher-card:hover .contact-avatar {
+            border-color: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        .contact-teacher-card .contact-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .contact-teacher-card .contact-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+
+        .contact-teacher-card .contact-subject {
+            font-size: 0.7rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .contact-teacher-card .contact-section-name {
+            font-size: 0.6rem;
+            color: var(--text-light);
+        }
+
+        .contact-teacher-card .contact-btn {
+            margin-top: 0.5rem;
+            padding: 0.3rem 1rem;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .contact-teacher-card .contact-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+        }
+
         /* ===== نموذج التواصل ===== */
         .contact-info-box {
             background: var(--bg);
@@ -983,6 +1073,552 @@
             font-size: 0.6rem;
         }
 
+        /* ===== لوحة تحكم المدرس ===== */
+        .teacher-dashboard-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1rem;
+            border: 2px solid var(--primary);
+            margin-top: 1rem;
+        }
+
+        .teacher-dashboard-card .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .teacher-dashboard-card .dashboard-header h3 {
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        .teacher-dashboard-card .dashboard-header h3 i {
+            color: var(--primary);
+        }
+
+        .teacher-dashboard-card .dashboard-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .teacher-dashboard-card .dashboard-stats .stat-item {
+            background: var(--bg);
+            padding: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .teacher-dashboard-card .dashboard-stats .stat-item .stat-number {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .teacher-dashboard-card .dashboard-stats .stat-item .stat-label {
+            font-size: 0.6rem;
+            color: var(--text-light);
+        }
+
+        .teacher-dashboard-card .dashboard-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .teacher-dashboard-card .dashboard-actions button {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            transition: all 0.3s;
+        }
+
+        .teacher-dashboard-card .dashboard-actions button:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-dash-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-dash-purple {
+            background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+            color: white;
+        }
+
+        .btn-dash-green {
+            background: linear-gradient(135deg, #22C55E, #16A34A);
+            color: white;
+        }
+
+        .btn-dash-orange {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+        }
+
+        .btn-dash-red {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            color: white;
+        }
+
+        /* ===== رسائل المدرس الواردة ===== */
+        .teacher-inbox-item {
+            background: var(--bg);
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 0.4rem;
+            border-right: 3px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .teacher-inbox-item:hover {
+            background: var(--bg-hover);
+        }
+
+        .teacher-inbox-item .inbox-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            color: var(--text-light);
+        }
+
+        .teacher-inbox-item .inbox-sender {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .teacher-inbox-item .inbox-subject {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin: 0.1rem 0;
+        }
+
+        .teacher-inbox-item .inbox-message {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .teacher-inbox-item .inbox-attachments {
+            font-size: 0.6rem;
+            color: var(--primary);
+        }
+
+        .teacher-inbox-item .inbox-status {
+            font-size: 0.6rem;
+            font-weight: 600;
+        }
+
+        .teacher-inbox-item .inbox-status.read {
+            color: #22c55e;
+        }
+
+        .teacher-inbox-item .inbox-status.unread {
+            color: #f59e0b;
+        }
+
+        .teacher-inbox-item .inbox-actions {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.2rem;
+        }
+
+        .teacher-inbox-item .inbox-actions button {
+            padding: 0.1rem 0.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.55rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .teacher-inbox-item .inbox-actions .btn-mark-read {
+            background: var(--primary);
+            color: white;
+        }
+
+        .teacher-inbox-item .inbox-actions .btn-mark-read:hover {
+            background: var(--primary-dark);
+        }
+
+        .teacher-inbox-item .inbox-actions .btn-delete-inbox {
+            background: #ef4444;
+            color: white;
+        }
+
+        .teacher-inbox-item .inbox-actions .btn-delete-inbox:hover {
+            background: #dc2626;
+        }
+
+        /* ===== المحادثة ===== */
+        .modal-chat {
+            max-width: 700px;
+            max-height: 90vh;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-radius: 20px;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            flex-shrink: 0;
+        }
+
+        .chat-header .chat-user {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-header .chat-user .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .chat-header .chat-user .chat-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .chat-header .chat-user .chat-user-info .chat-name {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .chat-header .chat-user .chat-user-info .chat-status {
+            font-size: 0.65rem;
+            opacity: 0.8;
+        }
+
+        .chat-header .chat-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .chat-header .chat-actions button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .chat-header .chat-actions button:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .chat-messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: var(--bg);
+            min-height: 300px;
+            max-height: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .chat-message {
+            max-width: 75%;
+            padding: 0.5rem 0.8rem;
+            margin: 0.1rem 0;
+            word-wrap: break-word;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .chat-message .msg-time {
+            font-size: 0.55rem;
+            opacity: 0.6;
+            margin-top: 0.2rem;
+            display: block;
+        }
+
+        .chat-message .msg-attachment {
+            display: block;
+            margin-top: 0.2rem;
+            padding: 0.3rem 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chat-message .msg-attachment:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .chat-message .msg-attachment img {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 6px;
+            margin-top: 0.2rem;
+        }
+
+        .chat-message .msg-attachment video {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 6px;
+            margin-top: 0.2rem;
+        }
+
+        .chat-message.received .msg-attachment {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-message.sent .msg-attachment {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* مظهر المحادثة النهاري */
+        .chat-theme-light .chat-messages-area {
+            background: #f0f4f8;
+        }
+        .chat-theme-light .chat-message.sent {
+            background: var(--primary-gradient);
+            color: white;
+            align-self: flex-end;
+            border-radius: 16px 16px 4px 16px;
+        }
+        .chat-theme-light .chat-message.received {
+            background: white;
+            color: var(--text);
+            align-self: flex-start;
+            border-radius: 16px 16px 16px 4px;
+            border: 1px solid var(--border);
+        }
+        
+        /* مظهر المحادثة الليلي */
+        .chat-theme-dark .chat-messages-area {
+            background: #1a1a2e;
+        }
+        .chat-theme-dark .chat-message.sent {
+            background: linear-gradient(135deg, #0EA5E9, #38BDF8);
+            color: white;
+            align-self: flex-end;
+            border-radius: 16px 16px 4px 16px;
+        }
+        .chat-theme-dark .chat-message.received {
+            background: #2d2d44;
+            color: #e0e0e0;
+            align-self: flex-start;
+            border-radius: 16px 16px 16px 4px;
+            border: 1px solid #3d3d5a;
+        }
+
+        .chat-input-area {
+            padding: 0.8rem;
+            background: var(--bg-card);
+            border-top: 2px solid var(--border);
+            border-radius: 0 0 20px 20px;
+            flex-shrink: 0;
+        }
+
+        .chat-input-area .chat-tools {
+            display: flex;
+            gap: 0.3rem;
+            margin-bottom: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .chat-input-area .chat-tools .chat-attach-btn {
+            padding: 0.2rem 0.5rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.65rem;
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .chat-input-area .chat-tools .chat-attach-btn:hover {
+            border-color: var(--primary);
+            background: var(--bg-hover);
+        }
+
+        .chat-input-area .chat-tools .chat-attach-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            background: var(--bg);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            border: 1px solid var(--border);
+        }
+
+        .chat-input-area .chat-tools .chat-attach-item .remove-attach {
+            cursor: pointer;
+            color: #ef4444;
+            font-size: 0.6rem;
+        }
+
+        .chat-input-area .chat-input-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input-area .chat-input-row textarea {
+            flex: 1;
+            padding: 0.5rem 0.8rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.9rem;
+            outline: none;
+            resize: none;
+            font-family: 'Cairo', sans-serif;
+            min-height: 40px;
+            max-height: 100px;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input-area .chat-input-row textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+        }
+
+        .chat-input-area .chat-input-row .btn-send {
+            padding: 0.5rem 1.2rem;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .chat-input-area .chat-input-row .btn-send:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* ===== المدرسين في لوحة الإدارة ===== */
+        .teacher-management-item {
+            background: var(--bg);
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 0.4rem;
+            border-right: 3px solid var(--primary);
+        }
+
+        .teacher-management-item .tm-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+
+        .teacher-management-item .tm-header .tm-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .teacher-management-item .tm-header .tm-subject {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-right: 0.5rem;
+        }
+
+        .teacher-management-item .tm-header .tm-section {
+            font-size: 0.65rem;
+            color: var(--text-light);
+        }
+
+        .teacher-management-item .tm-stats {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        .teacher-management-item .tm-actions {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.3rem;
+        }
+
+        .teacher-management-item .tm-actions button {
+            padding: 0.1rem 0.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .teacher-management-item .tm-actions .tm-edit {
+            background: var(--primary);
+            color: white;
+        }
+
+        .teacher-management-item .tm-actions .tm-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* ===== سكرول ===== */
+        .chat-messages-area::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-messages-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-messages-area::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
             .hero {
                 min-height: 20vh;
@@ -1004,6 +1640,10 @@
             }
             .teachers-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+            .contact-teachers-grid {
+                grid-template-columns: 1fr 1fr;
                 gap: 0.5rem;
             }
             .filter-buttons .filter-btn {
@@ -1037,13 +1677,33 @@
             .account-section .stat-box .number {
                 font-size: 1.1rem;
             }
-            .contact-info-banner span {
-                font-size: 0.75rem;
+            .teacher-dashboard-card .dashboard-stats {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 0.3rem;
+            }
+            .teacher-dashboard-card .dashboard-actions {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.3rem;
+            }
+            .modal-chat {
+                max-width: 100%;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+            .chat-header {
+                border-radius: 0;
+            }
+            .chat-input-area {
+                border-radius: 0;
             }
         }
 
         @media (max-width: 380px) {
             .teachers-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.3rem;
+            }
+            .contact-teachers-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 0.3rem;
             }
@@ -1059,6 +1719,14 @@
             }
             .teacher-card-info h3 {
                 font-size: .7rem;
+            }
+            .contact-teacher-card .contact-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            .contact-teacher-card .contact-name {
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -1175,7 +1843,7 @@
     <div id="page-contact" style="display:none;">
         <div class="contact-section">
             <div class="contact-header">
-                <h2><i class="fas fa-phone-alt"></i> التواصل مع المدرسين</h2>
+                <h2><i class="fas fa-comments"></i> التواصل مع المدرسين</h2>
                 <p>تواصل مع المدرسين الذين اشتركت في دوراتهم</p>
             </div>
 
@@ -1195,7 +1863,9 @@
                 </div>
             </div>
 
-            <div id="contactTeachersGrid" class="teachers-grid"></div>
+            <div id="contactTeachersContainer">
+                <div class="contact-teachers-grid" id="contactTeachersGrid"></div>
+            </div>
         </div>
     </div>
 
@@ -1223,11 +1893,66 @@
                 </div>
             </div>
 
-            <!-- ===== رسائلي ===== -->
+            <!-- ===== رسائلي المرسلة ===== -->
             <div class="messages-section">
                 <h3><i class="fas fa-envelope"></i> رسائلي المرسلة</h3>
                 <div id="myMessagesList">
                     <p style="color:var(--text-light);font-size:0.8rem;text-align:center;">لا توجد رسائل</p>
+                </div>
+            </div>
+
+            <!-- ===== رسائل المدرس الواردة ===== -->
+            <div id="teacherInboxSection" style="display:none;margin-top:1rem;background:var(--bg-card);border-radius:12px;padding:0.8rem;border:2px solid var(--primary);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;padding-bottom:0.3rem;border-bottom:2px solid var(--border);">
+                    <h3 style="font-size:0.9rem;color:var(--text);">
+                        <i class="fas fa-inbox" style="color:var(--primary);"></i> رسائلي الواردة
+                    </h3>
+                    <span id="teacherInboxCount" style="background:var(--primary-gradient);color:white;padding:0.1rem 0.6rem;border-radius:20px;font-size:0.7rem;font-weight:700;">0</span>
+                </div>
+                <div id="teacherInboxMessages">
+                    <p style="color:var(--text-light);font-size:0.8rem;text-align:center;">لا توجد رسائل واردة</p>
+                </div>
+            </div>
+
+            <!-- ===== لوحة تحكم المدرس ===== -->
+            <div id="teacherDashboard" style="display:none;margin-top:1rem;background:var(--bg-card);border-radius:12px;padding:0.8rem;border:2px solid var(--primary);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;padding-bottom:0.5rem;border-bottom:2px solid var(--primary);">
+                    <h3 style="font-size:1rem;color:var(--text);">
+                        <i class="fas fa-chalkboard-teacher" style="color:var(--primary);"></i> لوحة تحكم المدرس
+                    </h3>
+                    <span style="background:var(--primary-gradient);color:white;padding:0.1rem 0.6rem;border-radius:20px;font-size:0.7rem;font-weight:700;">
+                        👨‍🏫 نشط
+                    </span>
+                </div>
+
+                <div class="dashboard-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="teacherStatsCourses">0</div>
+                        <div class="stat-label">📚 فصولي</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="teacherStatsLectures">0</div>
+                        <div class="stat-label">🎥 محاضراتي</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="teacherStatsStudents">0</div>
+                        <div class="stat-label">👨‍🎓 طلابي</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-actions">
+                    <button class="btn-dash-primary" onclick="openTeacherAdmin()">
+                        <i class="fas fa-cog"></i> إدارة المحاضرات
+                    </button>
+                    <button class="btn-dash-purple" onclick="openTeacherCodes()">
+                        <i class="fas fa-key"></i> أكوادي
+                    </button>
+                    <button class="btn-dash-green" onclick="openTeacherStudents()">
+                        <i class="fas fa-users"></i> طلابي
+                    </button>
+                    <button class="btn-dash-orange" onclick="openTeacherMessages()">
+                        <i class="fas fa-envelope"></i> رسائلي
+                    </button>
                 </div>
             </div>
 
@@ -1353,6 +2078,178 @@
         </div>
     </div>
 
+    <!-- ===== CHAT MODAL ===== -->
+    <div class="modal-overlay" id="chatModal">
+        <div class="modal modal-chat chat-theme-light">
+            <!-- رأس المحادثة -->
+            <div class="chat-header">
+                <div class="chat-user">
+                    <div class="chat-avatar" id="chatAvatar">👤</div>
+                    <div class="chat-user-info">
+                        <div class="chat-name" id="chatTeacherName">المدرس</div>
+                        <div class="chat-status">
+                            <span id="chatOnlineStatus">🟢 متصل</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button onclick="toggleChatTheme()" id="chatThemeBtn" title="تبديل المظهر">
+                        <i class="fas fa-moon" id="chatThemeIcon"></i>
+                    </button>
+                    <button class="close-btn" id="closeChatModal" style="color:white;font-size:1.2rem;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- منطقة الرسائل -->
+            <div class="chat-messages-area" id="chatMessages">
+                <div style="text-align:center;color:var(--text-light);font-size:0.8rem;padding:1rem 0;">
+                    <i class="fas fa-comment" style="font-size:2rem;display:block;margin-bottom:0.5rem;opacity:0.3;"></i>
+                    لا توجد رسائل بعد، ابدأ المحادثة!
+                </div>
+            </div>
+
+            <!-- منطقة الإدخال -->
+            <div class="chat-input-area">
+                <div class="chat-tools" id="chatTools">
+                    <button onclick="chatAttach('image')" class="chat-attach-btn">
+                        <i class="fas fa-image"></i> صورة
+                    </button>
+                    <button onclick="chatAttach('video')" class="chat-attach-btn">
+                        <i class="fas fa-video"></i> فيديو
+                    </button>
+                    <button onclick="chatAttach('file')" class="chat-attach-btn">
+                        <i class="fas fa-paperclip"></i> ملف
+                    </button>
+                    <button onclick="chatAttach('audio')" class="chat-attach-btn">
+                        <i class="fas fa-microphone"></i> صوت
+                    </button>
+                    <span id="chatAttachmentsList" style="display:flex;gap:0.3rem;flex-wrap:wrap;flex:1;"></span>
+                </div>
+                <div class="chat-input-row">
+                    <textarea id="chatInput" rows="1" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage();}"></textarea>
+                    <button class="btn-send" onclick="sendChatMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TEACHER ADMIN MODAL ===== -->
+    <div class="modal-overlay" id="teacherAdminModal">
+        <div class="modal modal-large">
+            <button class="close-btn" id="closeTeacherAdmin"><i class="fas fa-times"></i></button>
+            <h2><i class="fas fa-chalkboard-teacher"></i> لوحة إدارة المدرس</h2>
+            <p style="text-align:center;color:var(--text-light);font-size:0.85rem;margin-bottom:0.8rem;" id="teacherAdminName"></p>
+
+            <div class="admin-tabs" style="margin-bottom:0.5rem;">
+                <button class="tab-btn active" data-tab="teacher-add-semester">📀 فصل</button>
+                <button class="tab-btn" data-tab="teacher-add-lecture">🎥 محاضرة</button>
+                <button class="tab-btn" data-tab="teacher-codes">🔑 أكواد</button>
+                <button class="tab-btn" data-tab="teacher-lectures">📚 محاضراتي</button>
+            </div>
+
+            <!-- إضافة فصل -->
+            <div class="tab-content active" id="tab-teacher-add-semester">
+                <form id="teacherAddSemesterForm" class="admin-form">
+                    <h3>📀 إضافة فصل جديد</h3>
+                    <div class="form-group">
+                        <label>🔢 رقم الفصل *</label>
+                        <input type="number" id="teacherSemesterNumber" placeholder="1" min="1" required />
+                    </div>
+                    <div class="form-group">
+                        <label>📄 وصف الفصل</label>
+                        <input type="text" id="teacherSemesterDesc" placeholder="الفصل الأول - أساسيات" />
+                    </div>
+                    <button type="submit" class="btn-submit"><i class="fas fa-plus"></i> إضافة فصل</button>
+                </form>
+            </div>
+
+            <!-- إضافة محاضرة -->
+            <div class="tab-content" id="tab-teacher-add-lecture">
+                <form id="teacherAddLectureForm" class="admin-form">
+                    <h3>🎥 إضافة محاضرة جديدة</h3>
+                    <div class="form-group">
+                        <label>📀 اختيار الفصل *</label>
+                        <select id="teacherLectureSemester" required>
+                            <option value="">اختر الفصل...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>🔢 رقم المحاضرة *</label>
+                        <input type="number" id="teacherLectureNumber" placeholder="1" min="1" required />
+                    </div>
+                    <div class="form-group">
+                        <label>📝 عنوان المحاضرة *</label>
+                        <input type="text" id="teacherLectureTitle" placeholder="عنوان المحاضرة" required />
+                    </div>
+                    <div class="form-group">
+                        <label>📹 رابط الفيديو *</label>
+                        <input type="url" id="teacherLectureUrl" placeholder="https://player.mediadelivery.net/play/..." required />
+                        <small style="color:var(--text-light);font-size:.65rem;display:block;margin-top:2px;">يدعم mediadelivery و YouTube</small>
+                    </div>
+                    <div class="form-group">
+                        <label>🔒 الحالة</label>
+                        <select id="teacherLectureFree">
+                            <option value="true">🆓 مجانية</option>
+                            <option value="false">🔒 مقفلة (تحتاج كود)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit"><i class="fas fa-plus"></i> إضافة محاضرة</button>
+                </form>
+            </div>
+
+            <!-- أكواد المدرس -->
+            <div class="tab-content" id="tab-teacher-codes">
+                <h3 style="font-size:0.9rem;margin-bottom:0.3rem;">🔑 أكواد التفعيل الخاصة بي</h3>
+                <p style="color:var(--text-light);font-size:0.75rem;margin-bottom:0.5rem;">هذه الأكواد يستخدمها الطلاب للاشتراك في دوراتك</p>
+                <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+                    <input type="text" id="teacherManualCode" placeholder="أدخل كود جديد..." maxlength="20" style="flex:1;min-width:120px;padding:0.4rem;border:1.5px solid var(--border);border-radius:8px;background:var(--bg-card);color:var(--text);font-size:0.85rem;outline:none;text-align:center;letter-spacing:2px;font-weight:700;font-family:monospace;" />
+                    <button onclick="teacherAddCode()" style="padding:0.3rem 0.8rem;background:var(--primary);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">➕ إضافة</button>
+                    <button onclick="teacherGenerateCodes(5)" style="padding:0.3rem 0.8rem;background:#22c55e;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">🔀 توليد 5</button>
+                </div>
+                <div id="teacherCodesContainer">
+                    <p style="color:var(--text-light);text-align:center;font-size:0.8rem;">لا توجد أكواد</p>
+                </div>
+            </div>
+
+            <!-- محاضراتي -->
+            <div class="tab-content" id="tab-teacher-lectures">
+                <h3 style="font-size:0.9rem;margin-bottom:0.3rem;">📚 محاضراتي</h3>
+                <p style="color:var(--text-light);font-size:0.75rem;margin-bottom:0.5rem;">جميع المحاضرات التي قمت بإضافتها</p>
+                <div id="teacherLecturesList">
+                    <p style="color:var(--text-light);text-align:center;font-size:0.8rem;">لا توجد محاضرات</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TEACHER STUDENTS MODAL ===== -->
+    <div class="modal-overlay" id="teacherStudentsModal">
+        <div class="modal modal-large">
+            <button class="close-btn" id="closeTeacherStudents"><i class="fas fa-times"></i></button>
+            <h2><i class="fas fa-users"></i> طلابي</h2>
+            <p style="text-align:center;color:var(--text-light);font-size:0.85rem;margin-bottom:0.8rem;" id="teacherStudentsName"></p>
+            <div id="teacherStudentsList">
+                <p style="color:var(--text-light);text-align:center;font-size:0.8rem;">لا يوجد طلاب مسجلين</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TEACHER MESSAGES MODAL ===== -->
+    <div class="modal-overlay" id="teacherMessagesModal">
+        <div class="modal modal-large">
+            <button class="close-btn" id="closeTeacherMessages"><i class="fas fa-times"></i></button>
+            <h2><i class="fas fa-envelope"></i> رسائلي من الطلاب</h2>
+            <p style="text-align:center;color:var(--text-light);font-size:0.85rem;margin-bottom:0.8rem;" id="teacherMessagesName"></p>
+            <div id="teacherMessagesList">
+                <p style="color:var(--text-light);text-align:center;font-size:0.8rem;">لا توجد رسائل</p>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== VIDEO PLAYER ===== -->
     <div class="video-player-container" id="videoPlayer">
         <div class="video-player-wrapper">
@@ -1385,8 +2282,9 @@
                 <button class="tab-btn" data-tab="delete">🗑️ حذف</button>
                 <button class="tab-btn" data-tab="users">👥 مستخدمين</button>
                 <button class="tab-btn" data-tab="add-admin">👑 أدمن</button>
-                <button class="tab-btn" data-tab="publish">📤 نشر</button>
+                <button class="tab-btn" data-tab="teacher-management">👨‍🏫 المدرسين</button>
                 <button class="tab-btn" data-tab="contact-messages">✉️ الرسائل</button>
+                <button class="tab-btn" data-tab="publish">📤 نشر</button>
             </div>
 
             <!-- ===== ADD SECTION ===== -->
@@ -1745,11 +2643,22 @@
                 </div>
             </div>
 
+            <!-- ===== TEACHER MANAGEMENT ===== -->
+            <div class="tab-content" id="tab-teacher-management">
+                <div class="teacher-management">
+                    <h3 style="font-size:.9rem;margin-bottom:0.3rem;">👨‍🏫 إدارة المدرسين</h3>
+                    <p style="color:var(--text-light);font-size:.75rem;margin-bottom:0.5rem;">جميع المدرسين المسجلين في المنصة</p>
+                    <div id="teachersManagementList">
+                        <p style="color:var(--text-light);text-align:center;font-size:0.8rem;">جاري التحميل...</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- ===== CONTACT MESSAGES ===== -->
             <div class="tab-content" id="tab-contact-messages">
                 <div class="contact-messages-management">
                     <h3 style="font-size:.9rem;margin-bottom:0.3rem;">✉️ رسائل التواصل</h3>
-                    <p style="color:var(--text-light);font-size:.75rem;margin-bottom:0.5rem;">جميع الرسائل المرسلة</p>
+                    <p style="color:var(--text-light);font-size:.75rem;margin-bottom:0.5rem;">جميع الرسائل المرسلة بين الطلاب والمدرسين</p>
                     <div id="allMessagesContainer">
                         <p style="color:var(--text-light);text-align:center;padding:0.5rem 0;font-size:.8rem;">لا توجد رسائل</p>
                     </div>
