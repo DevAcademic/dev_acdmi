@@ -2,2725 +2,1510 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>📚 ديف أكاديمي - منصة التعلم</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevFlix - الرئيسية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* ============================================================
-           تصميم احترافي - بحجم صغير ومتناسق
+           المتغيرات والتنسيقات العامة
            ============================================================ */
-
-        /* ===== فلتر الأقسام ===== */
-        .filter-section {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 0.8rem 1rem;
-            margin: 0.5rem 0 1rem;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-            border: 1px solid var(--border);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .filter-section .filter-header {
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #1a1a1a;
+            --bg-hover: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --accent: #E50914;
+            --accent-hover: #f6121e;
+            --border-color: #2a2a2a;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* وضع النهار */
+        body.light-mode {
+            --bg-primary: #f5f5f5;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-hover: #f0f0f0;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            --border-color: #e0e0e0;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .sidebar {
+            background: #ffffff;
+        }
+
+        body.light-mode .bottom-nav {
+            background: #ffffff;
+        }
+
+        body.light-mode .search-bar input {
+            background: #f0f0f0;
+            color: #1a1a1a;
+        }
+
+        body.light-mode .welcome-section {
+            background: #ffffff;
+        }
+
+        body.light-mode .content-card {
+            background: #ffffff;
+        }
+
+        /* ============================================================
+           الهيدر
+           ============================================================ */
+        .dashboard-header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            height: 65px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin-bottom: 0.5rem;
+            padding: 0 20px;
+            z-index: 1000;
         }
 
-        .filter-section .filter-header .filter-label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: var(--text);
+        .header-left {
             display: flex;
             align-items: center;
-            gap: 0.3rem;
+            gap: 15px;
         }
 
-        .filter-section .filter-header .filter-label i {
-            color: var(--primary);
-            font-size: 0.9rem;
-        }
-
-        .filter-section .filter-header .filter-result {
-            font-size: 0.75rem;
-            color: var(--text-light);
-            background: var(--bg);
-            padding: 0.15rem 0.7rem;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-
-        .filter-section .filter-header .filter-result span {
-            color: var(--primary);
-        }
-
-        /* ===== أزرار الفلتر ===== */
-        .filter-buttons {
-            display: flex;
-            gap: 0.4rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-buttons .filter-btn {
-            padding: 0.25rem 0.8rem;
-            border-radius: 30px;
-            border: 1.5px solid var(--border);
-            background: var(--bg-card);
-            color: var(--text);
+        .menu-toggle {
             cursor: pointer;
-            transition: all 0.25s ease;
-            font-weight: 600;
-            font-size: 0.7rem;
-            white-space: nowrap;
+            font-size: 22px;
+            color: var(--text-primary);
+            display: none;
+            padding: 5px;
+        }
+
+        .logo-small {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .header-center {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 15px;
+        }
+
+        .search-bar {
             display: flex;
             align-items: center;
-            gap: 0.2rem;
-        }
-
-        .filter-buttons .filter-btn:hover {
-            border-color: var(--primary);
-            transform: translateY(-1px);
-        }
-
-        .filter-buttons .filter-btn.active {
-            background: var(--primary-gradient);
-            color: white;
-            border-color: var(--primary);
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
-        }
-
-        .filter-buttons .filter-btn .btn-count {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.02rem 0.4rem;
-            border-radius: 20px;
-            font-size: 0.6rem;
-            font-weight: 700;
-        }
-
-        .filter-buttons .filter-btn.active .btn-count {
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        /* ===== شبكة المدرسين ===== */
-        .teachers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        /* ===== بطاقة المدرس ===== */
-        .teacher-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1.5px solid var(--border);
-            position: relative;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            text-align: center;
-            padding: 0.8rem 0.6rem 0.8rem;
-        }
-
-        .teacher-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--primary-gradient);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .teacher-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .teacher-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--primary);
-            box-shadow: 0 12px 40px rgba(14, 165, 233, 0.12);
-        }
-
-        /* ===== صورة المدرس (مصغرة) ===== */
-        .teacher-card .teacher-card-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin: 0 auto 0.5rem;
-            background: linear-gradient(145deg, var(--bg), var(--border));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            border: 3px solid var(--primary);
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .teacher-card:hover .teacher-card-image {
-            border-color: var(--secondary);
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(14, 165, 233, 0.2);
-        }
-
-        .teacher-card .teacher-card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            padding: 0 12px;
             transition: var(--transition);
         }
 
-        .teacher-card:hover .teacher-card-image img {
-            transform: scale(1.08);
+        .search-bar:focus-within {
+            border-color: var(--accent);
         }
 
-        .teacher-card .teacher-card-image .teacher-emoji {
-            font-size: 2.5rem;
-            transition: var(--transition);
+        .search-bar i {
+            color: var(--text-muted);
         }
 
-        .teacher-card:hover .teacher-emoji {
-            transform: scale(1.1);
-        }
-
-        .teacher-card .teacher-card-image .teacher-badge {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            background: linear-gradient(135deg, #22C55E, #16A34A);
-            color: white;
-            padding: 0.1rem 0.4rem;
-            border-radius: 20px;
-            font-size: 0.55rem;
-            font-weight: 700;
-            border: 2px solid var(--bg-card);
-            z-index: 2;
-        }
-
-        /* ===== معلومات المدرس ===== */
-        .teacher-card .teacher-section-badge {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: var(--bg);
-            padding: 0.1rem 0.5rem;
-            border-radius: 20px;
-            font-size: 0.55rem;
-            font-weight: 600;
-            color: var(--text-light);
-            border: 1px solid var(--border);
-            z-index: 2;
-        }
-
-        .teacher-card-info h3 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            margin: 0.2rem 0 0.05rem;
-            color: var(--text);
-            transition: var(--transition);
-        }
-
-        .teacher-card:hover .teacher-card-info h3 {
-            color: var(--primary);
-        }
-
-        .teacher-card-info .teacher-subject {
-            font-size: 0.7rem;
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        .teacher-card-info .teacher-stats {
-            font-size: 0.65rem;
-            color: var(--text-light);
-            margin-top: 0.1rem;
-        }
-
-        /* ===== Overlay ===== */
-        .teacher-card .teacher-card-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(14, 165, 233, 0.88);
-            backdrop-filter: blur(6px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: all 0.3s ease;
-            gap: 0.1rem;
-            border-radius: 16px;
-        }
-
-        .teacher-card .teacher-card-overlay i {
-            font-size: 2rem;
-            color: white;
-        }
-
-        .teacher-card .teacher-card-overlay span {
-            color: white;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .teacher-card:hover .teacher-card-overlay {
-            opacity: 1;
-        }
-
-        /* ===== زر التواصل ===== */
-        .btn-contact {
-            position: absolute;
-            bottom: 0.5rem;
-            left: 0.5rem;
-            background: var(--primary-gradient);
-            color: white;
+        .search-bar input {
+            flex: 1;
+            padding: 8px 12px;
+            background: transparent;
             border: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-bar input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .search-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            position: relative;
+            background: var(--bg-primary);
+            border: none;
+            color: var(--text-primary);
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 17px;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-hover);
+        }
+
+        .badge {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            background: var(--accent);
+            color: white;
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 50%;
+            min-width: 17px;
+            text-align: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        .user-profile:hover {
+            background: var(--bg-hover);
+        }
+
+        .user-profile img {
             width: 32px;
             height: 32px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            z-index: 3;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 12px rgba(14, 165, 233, 0.3);
-            transition: all 0.3s ease;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
         }
 
-        .btn-contact:hover {
-            transform: scale(1.15);
-            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.5);
+        .user-profile span {
+            font-size: 13px;
+            font-weight: 600;
         }
 
-        /* ===== حالة فارغة ===== */
-        .empty-teachers {
-            text-align: center;
-            padding: 2rem 1rem;
-            color: var(--text-light);
-        }
-
-        .empty-teachers .empty-icon {
-            font-size: 3rem;
-            display: block;
-            margin-bottom: 0.5rem;
-            opacity: 0.4;
-        }
-
-        .empty-teachers h3 {
-            font-size: 1.1rem;
-            color: var(--text);
-            margin-bottom: 0.2rem;
-        }
-
-        .empty-teachers p {
-            font-size: 0.85rem;
+        .user-profile .chevron {
+            font-size: 12px;
+            color: var(--text-muted);
         }
 
         /* ============================================================
-           الأنماط الأساسية
+           القائمة الجانبية
+           ============================================================ */
+        .sidebar {
+            position: fixed;
+            top: 65px;
+            right: 0;
+            bottom: 0;
+            width: 260px;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            padding: 20px;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: var(--transition);
+            z-index: 999;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-user {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-user img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .sidebar-user h3 {
+            font-size: 17px;
+            color: var(--text-primary);
+        }
+
+        .sidebar-user p {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .sidebar-nav a.active {
+            border-right: 3px solid var(--accent);
+        }
+
+        .sidebar-nav i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--accent);
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logout-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* ============================================================
+           المحتوى الرئيسي
+           ============================================================ */
+        .main-content {
+            margin-top: 65px;
+            padding: 20px 20px 80px 20px;
+            min-height: 100vh;
+        }
+
+        /* قسم الترحيب */
+        .welcome-section {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-hover));
+            border-radius: 20px;
+            padding: 28px 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .welcome-text h1 {
+            font-size: 26px;
+            margin-bottom: 4px;
+        }
+
+        .welcome-text h1 span {
+            color: var(--accent);
+        }
+
+        .welcome-text p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .welcome-stats {
+            display: flex;
+            gap: 25px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-primary);
+            padding: 8px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-item i {
+            color: var(--accent);
+            font-size: 18px;
+        }
+
+        .stat-item span {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .stat-item label {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        /* أقسام المحتوى */
+        .content-section {
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .section-header h2 {
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .section-header a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .section-header a:hover {
+            color: var(--accent);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 15px;
+        }
+
+        .content-card {
+            background: var(--bg-card);
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .content-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 8px 24px rgba(229, 9, 20, 0.15);
+        }
+
+        .content-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .content-card .card-info {
+            padding: 10px 12px;
+        }
+
+        .content-card .card-info h4 {
+            font-size: 13px;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .content-card .card-info .card-type {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================================
+           الشريط السفلي
            ============================================================ */
         .bottom-nav {
             position: fixed;
             bottom: 0;
-            left: 0;
             right: 0;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
+            left: 0;
+            height: 65px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 0.3rem 0;
-            z-index: 999;
+            padding: 0 8px;
+            z-index: 1000;
         }
 
-        .bottom-nav .nav-item {
+        .bottom-nav a {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.05rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: var(--text-light);
-            font-size: .6rem;
-            min-width: 50px;
-            border: none;
-            background: none;
+            gap: 2px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 10px;
+            padding: 4px 12px;
+            border-radius: 10px;
+            transition: var(--transition);
             position: relative;
         }
 
-        .bottom-nav .nav-item i {
-            font-size: 1.2rem;
+        .bottom-nav a i {
+            font-size: 20px;
         }
 
-        .bottom-nav .nav-item.active {
-            color: var(--primary);
+        .bottom-nav a.active {
+            color: var(--accent);
         }
 
-        .bottom-nav .nav-item .badge {
-            background: #ef4444;
-            color: #fff;
-            border-radius: 50%;
-            padding: 0.05rem 0.35rem;
-            font-size: .5rem;
+        .bottom-nav a .badge {
             position: absolute;
             top: -2px;
-            right: -4px;
-            min-width: 16px;
-            text-align: center;
+            right: 4px;
+            font-size: 8px;
+            padding: 1px 5px;
+            min-width: 15px;
         }
 
-        .video-player-wrapper .player-info {
-            display: none !important;
-        }
-
-        .player-container iframe,
-        .player-container video {
-            pointer-events: auto !important;
-        }
-
-        .hero {
-            min-height: 25vh;
-            padding: 0.8rem 1rem;
-        }
-
-        .hero-title {
-            font-size: 1.8rem;
-        }
-
-        .hero-desc {
-            font-size: .85rem;
-        }
-
-        .teachers-container {
-            padding-bottom: 70px;
-            padding-top: 0.5rem;
-        }
-
-        .account-section {
-            padding: 1rem 1rem 80px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .account-section .profile-header {
-            text-align: center;
-            padding: 1rem 0;
-        }
-
-        .account-section .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
+        /* ============================================================
+           المودالات
+           ============================================================ */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
             justify-content: center;
-            font-size: 2.5rem;
-            color: #fff;
-            margin: 0 auto 0.8rem;
-            border: 3px solid var(--primary);
-            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.25);
-        }
-
-        .account-section .profile-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-
-        .account-section .profile-email {
-            color: var(--text-light);
-            font-size: .85rem;
-        }
-
-        .account-section .profile-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.6rem;
-            margin: 1rem 0;
-        }
-
-        .account-section .stat-box {
-            background: var(--bg-card);
-            padding: 0.8rem;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-
-        .account-section .stat-box .number {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .account-section .stat-box .label {
-            font-size: .7rem;
-            color: var(--text-light);
-        }
-
-        .account-section .account-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            margin-top: 1rem;
-        }
-
-        .account-section .account-actions button {
-            padding: 0.6rem;
-            border: none;
-            border-radius: 10px;
-            font-size: .9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .3s;
-        }
-
-        .account-section .account-actions .btn-logout-account {
-            background: #ef4444;
-            color: #fff;
-        }
-
-        .account-section .account-actions .btn-logout-account:hover {
-            background: #dc2626;
-        }
-
-        .account-section .account-actions .btn-admin {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        .account-section .account-actions .btn-admin:hover {
-            background: var(--primary-dark);
-        }
-
-        /* ===== رسائل المستخدم ===== */
-        .messages-section {
-            margin-top: 1rem;
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 0.8rem;
-            border: 1px solid var(--border);
-        }
-
-        .messages-section h3 {
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            color: var(--text);
-        }
-
-        .messages-section h3 i {
-            color: var(--primary);
-        }
-
-        .message-item {
-            background: var(--bg);
-            padding: 0.5rem 0.8rem;
-            border-radius: 8px;
-            margin-bottom: 0.4rem;
-            border-right: 3px solid var(--primary);
-        }
-
-        .message-item .msg-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.65rem;
-            color: var(--text-light);
-        }
-
-        .message-item .msg-subject {
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .message-item .msg-body {
-            font-size: 0.75rem;
-            color: var(--text-light);
-        }
-
-        .message-item .msg-attachments {
-            font-size: 0.6rem;
-            color: var(--primary);
-        }
-
-        .message-item .msg-status {
-            font-size: 0.6rem;
-        }
-
-        .message-item .msg-status.read {
-            color: #22c55e;
-        }
-
-        .message-item .msg-status.unread {
-            color: #f59e0b;
-        }
-
-        .my-courses-section {
-            padding: 1rem 1rem 80px;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .my-courses-section .section-header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.4rem;
-            border-bottom: 1.5px solid var(--border);
+            padding: 20px;
         }
 
-        .my-courses-section .section-header h2 {
-            font-size: 1.1rem;
-            color: var(--text);
-        }
-
-        .my-courses-section .section-header h2 i {
-            color: var(--primary);
-            margin-left: 0.4rem;
-        }
-
-        .my-courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 0.8rem;
-        }
-
-        .course-card-mini {
-            background: var(--bg-card);
-            border-radius: 10px;
-            padding: 0.8rem;
-            border: 1.5px solid var(--border);
-            transition: all .3s;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .course-card-mini:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            border-color: var(--primary);
-        }
-
-        .course-card-mini .course-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin: 0 auto 0.4rem;
-            overflow: hidden;
-            background: var(--primary);
+        .modal.show {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            color: #fff;
         }
 
-        .course-card-mini .course-avatar img {
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 18px;
+            max-width: 450px;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            animation: slideUp 0.3s ease;
         }
 
-        .course-card-mini .course-name {
-            font-weight: 700;
-            font-size: .9rem;
-            margin-bottom: 0.1rem;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .course-card-mini .course-meta {
-            font-size: .7rem;
-            color: var(--text-light);
-        }
-
-        .course-card-mini .course-badge {
-            display: inline-block;
-            background: #22c55e;
-            color: #fff;
-            padding: 0.1rem 0.5rem;
-            border-radius: 20px;
-            font-size: .6rem;
-            font-weight: 600;
-            margin-top: 0.2rem;
-        }
-
-        .empty-courses {
-            text-align: center;
-            padding: 2rem 1rem;
-            color: var(--text-light);
-        }
-
-        .empty-courses .empty-icon {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .empty-courses h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.3rem;
-            color: var(--text);
-        }
-
-        .empty-courses p {
-            font-size: .85rem;
-            max-width: 350px;
-            margin: 0 auto 1rem;
-        }
-
-        .empty-courses .btn-primary {
-            padding: 0.5rem 1.5rem;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            border-radius: 30px;
-            font-size: .85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .3s;
-        }
-
-        .empty-courses .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .user-profile-btn {
-            cursor: pointer;
+        .modal-header h3 {
             display: flex;
             align-items: center;
-            gap: 0.3rem;
+            gap: 10px;
+            font-size: 18px;
         }
 
-        .user-profile-btn .avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: .8rem;
-        }
-
-        .user-profile-btn .user-name {
-            font-size: .75rem;
-            font-weight: 500;
-            max-width: 80px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .loading-screen {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 70vh;
-        }
-
-        .loading-screen .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .btn-admin {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 0.6rem;
-            border-radius: 10px;
-            font-size: .9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
-        }
-
-        .btn-admin:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-logout-account {
-            background: #ef4444;
-            color: #fff;
-            border: none;
-            padding: 0.6rem;
-            border-radius: 10px;
-            font-size: .9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
-        }
-
-        .btn-logout-account:hover {
-            background: #dc2626;
-        }
-
-        .teachers-page-header {
-            text-align: center;
-            padding: 0.5rem 0;
-        }
-
-        .teachers-page-header h2 {
-            font-size: 1.3rem;
-            margin-bottom: 0.1rem;
-        }
-
-        .teachers-page-header p {
-            color: var(--text-light);
-            font-size: .85rem;
-        }
-
-        .btn-delete-admin {
-            background: #ef4444;
-            color: #fff;
-            border: none;
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: .65rem;
-        }
-
-        .btn-delete-admin:hover {
-            background: #dc2626;
-        }
-
-        .modal .close-btn {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.8rem;
-            font-size: 1.3rem;
-            cursor: pointer;
-            color: var(--text-light);
-            transition: all .3s;
+        .modal-header button {
             background: none;
             border: none;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 22px;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .modal .close-btn:hover {
-            color: var(--primary);
-            background: var(--bg-hover);
+        .modal-header button:hover {
+            color: var(--accent);
         }
 
-        /* ===== قسم التواصل ===== */
-        .contact-section {
-            padding: 1rem 1rem 80px;
-            max-width: 900px;
-            margin: 0 auto;
+        .modal-body {
+            padding: 20px;
         }
 
-        .contact-section .contact-header {
+        /* ============================================================
+           الملف الشخصي في المودال
+           ============================================================ */
+        .profile-info {
             text-align: center;
-            padding: 0.5rem 0;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .contact-section .contact-header h2 {
-            font-size: 1.3rem;
-            color: var(--text);
-        }
-
-        .contact-section .contact-header h2 i {
-            color: var(--primary);
-        }
-
-        .contact-section .contact-header p {
-            color: var(--text-light);
-            font-size: .85rem;
-        }
-
-        .contact-info-banner {
-            background: var(--bg);
-            border-radius: 12px;
-            padding: 0.8rem 1rem;
-            margin-bottom: 1rem;
-            border-right: 4px solid var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .contact-info-banner i {
-            color: var(--primary);
-            font-size: 1.2rem;
-        }
-
-        .contact-info-banner span {
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-
-        /* ===== بطاقات التواصل ===== */
-        .contact-teachers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .contact-teacher-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid var(--border);
-            text-align: center;
-            padding: 1rem 0.8rem 0.8rem;
-            position: relative;
-        }
-
-        .contact-teacher-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--primary);
-            box-shadow: 0 12px 40px rgba(14, 165, 233, 0.15);
-        }
-
-        .contact-teacher-card .contact-avatar {
-            width: 70px;
-            height: 70px;
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            margin: 0 auto 0.5rem;
-            overflow: hidden;
-            border: 3px solid var(--primary);
-            background: var(--primary-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: white;
-            transition: all 0.3s ease;
+            border: 3px solid var(--accent);
+            margin-bottom: 8px;
         }
 
-        .contact-teacher-card:hover .contact-avatar {
-            border-color: var(--secondary);
-            transform: scale(1.05);
+        .profile-info h3 {
+            font-size: 19px;
         }
 
-        .contact-teacher-card .contact-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .profile-info p {
+            color: var(--text-secondary);
+            font-size: 14px;
         }
 
-        .contact-teacher-card .contact-name {
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--text);
-        }
-
-        .contact-teacher-card .contact-subject {
-            font-size: 0.7rem;
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        .contact-teacher-card .contact-section-name {
-            font-size: 0.6rem;
-            color: var(--text-light);
-        }
-
-        .contact-teacher-card .contact-btn {
-            margin-top: 0.5rem;
-            padding: 0.3rem 1rem;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .contact-teacher-card .contact-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
-        }
-
-        /* ===== نموذج التواصل ===== */
-        .contact-info-box {
-            background: var(--bg);
-            padding: 0.8rem;
-            border-radius: 10px;
-            margin-bottom: 0.8rem;
-        }
-
-        .contact-info-box .contact-user {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .contact-info-box .contact-user .contact-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: white;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-
-        .contact-info-box .contact-user .contact-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .contact-info-box .contact-user .contact-user-info .contact-name {
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .contact-info-box .contact-user .contact-user-info .contact-subject {
-            font-size: 0.75rem;
-            color: var(--text-light);
-        }
-
-        .contact-info-box .contact-hint {
-            background: var(--bg-card);
-            padding: 0.5rem 0.8rem;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            color: var(--text-light);
-            border: 1px solid var(--border);
-        }
-
-        .btn-attach {
-            padding: 0.3rem 0.8rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            color: var(--text);
-            transition: all 0.3s;
-        }
-
-        .btn-attach:hover {
-            border-color: var(--primary);
+        .profile-badge {
+            display: inline-block;
+            padding: 3px 14px;
             background: var(--bg-hover);
-        }
-
-        .attachments-list {
-            display: flex;
-            gap: 0.3rem;
-            flex-wrap: wrap;
-            margin-top: 0.3rem;
-        }
-
-        .attachments-list .attach-item {
-            background: var(--bg);
-            padding: 0.15rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.65rem;
-            display: flex;
-            align-items: center;
-            gap: 0.2rem;
-            border: 1px solid var(--border);
-        }
-
-        .attachments-list .attach-item .remove-attach {
-            cursor: pointer;
-            color: #ef4444;
-            font-size: 0.6rem;
-        }
-
-        /* ===== لوحة تحكم المدرس ===== */
-        .teacher-dashboard-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 1rem;
-            border: 2px solid var(--primary);
-            margin-top: 1rem;
-        }
-
-        .teacher-dashboard-card .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.8rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--primary);
-        }
-
-        .teacher-dashboard-card .dashboard-header h3 {
-            font-size: 1rem;
-            color: var(--text);
-        }
-
-        .teacher-dashboard-card .dashboard-header h3 i {
-            color: var(--primary);
-        }
-
-        .teacher-dashboard-card .dashboard-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.5rem;
-            margin-bottom: 0.8rem;
-        }
-
-        .teacher-dashboard-card .dashboard-stats .stat-item {
-            background: var(--bg);
-            padding: 0.5rem;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-
-        .teacher-dashboard-card .dashboard-stats .stat-item .stat-number {
-            font-size: 1.3rem;
-            font-weight: 900;
-            color: var(--primary);
-        }
-
-        .teacher-dashboard-card .dashboard-stats .stat-item .stat-label {
-            font-size: 0.6rem;
-            color: var(--text-light);
-        }
-
-        .teacher-dashboard-card .dashboard-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-        }
-
-        .teacher-dashboard-card .dashboard-actions button {
-            padding: 0.5rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.3rem;
-            transition: all 0.3s;
-        }
-
-        .teacher-dashboard-card .dashboard-actions button:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-dash-primary {
-            background: var(--primary-gradient);
-            color: white;
-        }
-
-        .btn-dash-purple {
-            background: linear-gradient(135deg, #8B5CF6, #A78BFA);
-            color: white;
-        }
-
-        .btn-dash-green {
-            background: linear-gradient(135deg, #22C55E, #16A34A);
-            color: white;
-        }
-
-        .btn-dash-orange {
-            background: linear-gradient(135deg, #F59E0B, #D97706);
-            color: white;
-        }
-
-        .btn-dash-red {
-            background: linear-gradient(135deg, #EF4444, #DC2626);
-            color: white;
-        }
-
-        /* ===== رسائل المدرس الواردة ===== */
-        .teacher-inbox-item {
-            background: var(--bg);
-            padding: 0.6rem 0.8rem;
-            border-radius: 8px;
-            margin-bottom: 0.4rem;
-            border-right: 3px solid var(--primary);
-            transition: all 0.3s ease;
-        }
-
-        .teacher-inbox-item:hover {
-            background: var(--bg-hover);
-        }
-
-        .teacher-inbox-item .inbox-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.65rem;
-            color: var(--text-light);
-        }
-
-        .teacher-inbox-item .inbox-sender {
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .teacher-inbox-item .inbox-subject {
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin: 0.1rem 0;
-        }
-
-        .teacher-inbox-item .inbox-message {
-            font-size: 0.75rem;
-            color: var(--text-light);
-        }
-
-        .teacher-inbox-item .inbox-attachments {
-            font-size: 0.6rem;
-            color: var(--primary);
-        }
-
-        .teacher-inbox-item .inbox-status {
-            font-size: 0.6rem;
-            font-weight: 600;
-        }
-
-        .teacher-inbox-item .inbox-status.read {
-            color: #22c55e;
-        }
-
-        .teacher-inbox-item .inbox-status.unread {
-            color: #f59e0b;
-        }
-
-        .teacher-inbox-item .inbox-actions {
-            display: flex;
-            gap: 0.3rem;
-            margin-top: 0.2rem;
-        }
-
-        .teacher-inbox-item .inbox-actions button {
-            padding: 0.1rem 0.5rem;
-            border: none;
-            border-radius: 4px;
-            font-size: 0.55rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .teacher-inbox-item .inbox-actions .btn-mark-read {
-            background: var(--primary);
-            color: white;
-        }
-
-        .teacher-inbox-item .inbox-actions .btn-mark-read:hover {
-            background: var(--primary-dark);
-        }
-
-        .teacher-inbox-item .inbox-actions .btn-delete-inbox {
-            background: #ef4444;
-            color: white;
-        }
-
-        .teacher-inbox-item .inbox-actions .btn-delete-inbox:hover {
-            background: #dc2626;
-        }
-
-        /* ===== المحادثة ===== */
-        .modal-chat {
-            max-width: 700px;
-            max-height: 90vh;
-            padding: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
             border-radius: 20px;
+            font-size: 12px;
+            margin-top: 6px;
+            color: var(--accent);
         }
 
-        .chat-header {
+        .profile-stats {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.8rem 1rem;
-            background: var(--primary-gradient);
-            color: white;
-            border-radius: 20px 20px 0 0;
-            flex-shrink: 0;
+            justify-content: space-around;
+            padding: 16px 0;
+            text-align: center;
         }
 
-        .chat-header .chat-user {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .chat-header .chat-user .chat-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .chat-header .chat-user .chat-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .chat-header .chat-user .chat-user-info .chat-name {
+        .profile-stats div span {
+            display: block;
+            font-size: 22px;
             font-weight: 700;
-            font-size: 1rem;
+            color: var(--text-primary);
         }
 
-        .chat-header .chat-user .chat-user-info .chat-status {
-            font-size: 0.65rem;
-            opacity: 0.8;
+        .profile-stats div {
+            color: var(--text-secondary);
+            font-size: 13px;
         }
 
-        .chat-header .chat-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .chat-header .chat-actions button {
-            background: rgba(255, 255, 255, 0.2);
+        .logout-btn.full {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 34px;
-            height: 34px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
-        .chat-header .chat-actions button:hover {
-            background: rgba(255, 255, 255, 0.35);
-        }
-
-        .chat-messages-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-            background: var(--bg);
-            min-height: 300px;
-            max-height: 400px;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .chat-message {
-            max-width: 75%;
-            padding: 0.5rem 0.8rem;
-            margin: 0.1rem 0;
-            word-wrap: break-word;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s;
-        }
-
-        .chat-message .msg-time {
-            font-size: 0.55rem;
-            opacity: 0.6;
-            margin-top: 0.2rem;
-            display: block;
-        }
-
-        .chat-message .msg-attachment {
-            display: block;
-            margin-top: 0.2rem;
-            padding: 0.3rem 0.5rem;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 6px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .chat-message .msg-attachment:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        .chat-message .msg-attachment img {
-            max-width: 100%;
-            max-height: 150px;
-            border-radius: 6px;
-            margin-top: 0.2rem;
-        }
-
-        .chat-message .msg-attachment video {
-            max-width: 100%;
-            max-height: 150px;
-            border-radius: 6px;
-            margin-top: 0.2rem;
-        }
-
-        .chat-message.received .msg-attachment {
-            background: rgba(0, 0, 0, 0.05);
-        }
-
-        .chat-message.sent .msg-attachment {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        /* مظهر المحادثة النهاري */
-        .chat-theme-light .chat-messages-area {
-            background: #f0f4f8;
-        }
-        .chat-theme-light .chat-message.sent {
-            background: var(--primary-gradient);
-            color: white;
-            align-self: flex-end;
-            border-radius: 16px 16px 4px 16px;
-        }
-        .chat-theme-light .chat-message.received {
-            background: white;
-            color: var(--text);
-            align-self: flex-start;
-            border-radius: 16px 16px 16px 4px;
-            border: 1px solid var(--border);
-        }
-        
-        /* مظهر المحادثة الليلي */
-        .chat-theme-dark .chat-messages-area {
-            background: #1a1a2e;
-        }
-        .chat-theme-dark .chat-message.sent {
-            background: linear-gradient(135deg, #0EA5E9, #38BDF8);
-            color: white;
-            align-self: flex-end;
-            border-radius: 16px 16px 4px 16px;
-        }
-        .chat-theme-dark .chat-message.received {
-            background: #2d2d44;
-            color: #e0e0e0;
-            align-self: flex-start;
-            border-radius: 16px 16px 16px 4px;
-            border: 1px solid #3d3d5a;
-        }
-
-        .chat-input-area {
-            padding: 0.8rem;
-            background: var(--bg-card);
-            border-top: 2px solid var(--border);
-            border-radius: 0 0 20px 20px;
-            flex-shrink: 0;
-        }
-
-        .chat-input-area .chat-tools {
-            display: flex;
-            gap: 0.3rem;
-            margin-bottom: 0.3rem;
-            flex-wrap: wrap;
-        }
-
-        .chat-input-area .chat-tools .chat-attach-btn {
-            padding: 0.2rem 0.5rem;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.65rem;
-            color: var(--text);
-            transition: all 0.3s;
-        }
-
-        .chat-input-area .chat-tools .chat-attach-btn:hover {
-            border-color: var(--primary);
-            background: var(--bg-hover);
-        }
-
-        .chat-input-area .chat-tools .chat-attach-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.2rem;
-            background: var(--bg);
-            padding: 0.1rem 0.4rem;
-            border-radius: 4px;
-            font-size: 0.6rem;
-            border: 1px solid var(--border);
-        }
-
-        .chat-input-area .chat-tools .chat-attach-item .remove-attach {
-            cursor: pointer;
-            color: #ef4444;
-            font-size: 0.6rem;
-        }
-
-        .chat-input-area .chat-input-row {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .chat-input-area .chat-input-row textarea {
-            flex: 1;
-            padding: 0.5rem 0.8rem;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg);
-            color: var(--text);
-            font-size: 0.9rem;
-            outline: none;
-            resize: none;
-            font-family: 'Cairo', sans-serif;
-            min-height: 40px;
-            max-height: 100px;
-            transition: border-color 0.3s;
-        }
-
-        .chat-input-area .chat-input-row textarea:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
-        }
-
-        .chat-input-area .chat-input-row .btn-send {
-            padding: 0.5rem 1.2rem;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            border-radius: 12px;
+            border-radius: 10px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-            white-space: nowrap;
-        }
-
-        .chat-input-area .chat-input-row .btn-send:hover {
-            transform: scale(1.05);
-            box-shadow: var(--shadow-glow);
-        }
-
-        /* ===== المدرسين في لوحة الإدارة ===== */
-        .teacher-management-item {
-            background: var(--bg);
-            padding: 0.6rem 0.8rem;
-            border-radius: 8px;
-            margin-bottom: 0.4rem;
-            border-right: 3px solid var(--primary);
-        }
-
-        .teacher-management-item .tm-header {
+            transition: var(--transition);
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 0.3rem;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
         }
 
-        .teacher-management-item .tm-header .tm-name {
-            font-weight: 700;
-            font-size: 0.9rem;
+        .logout-btn.full:hover {
+            background: var(--accent-hover);
         }
 
-        .teacher-management-item .tm-header .tm-subject {
-            font-size: 0.7rem;
-            color: var(--text-light);
-            margin-right: 0.5rem;
-        }
-
-        .teacher-management-item .tm-header .tm-section {
-            font-size: 0.65rem;
-            color: var(--text-light);
-        }
-
-        .teacher-management-item .tm-stats {
+        /* ============================================================
+           الإشعارات
+           ============================================================ */
+        .notif-item {
             display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            font-size: 0.7rem;
-            color: var(--text-light);
-        }
-
-        .teacher-management-item .tm-actions {
-            display: flex;
-            gap: 0.3rem;
-            margin-top: 0.3rem;
-        }
-
-        .teacher-management-item .tm-actions button {
-            padding: 0.1rem 0.5rem;
-            border: none;
-            border-radius: 4px;
-            font-size: 0.6rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .teacher-management-item .tm-actions .tm-edit {
-            background: var(--primary);
-            color: white;
-        }
-
-        .teacher-management-item .tm-actions .tm-delete {
-            background: #ef4444;
-            color: white;
-        }
-
-        /* ===== سكرول ===== */
-        .chat-messages-area::-webkit-scrollbar {
-            width: 4px;
-        }
-        .chat-messages-area::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .chat-messages-area::-webkit-scrollbar-thumb {
-            background: var(--primary);
+            gap: 14px;
+            padding: 12px;
             border-radius: 10px;
+            margin-bottom: 8px;
+            background: var(--bg-primary);
+            border-right: 3px solid var(--accent);
         }
 
-        /* ===== RESPONSIVE ===== */
+        .notif-item .notif-icon {
+            font-size: 22px;
+        }
+
+        .notif-item .notif-text {
+            flex: 1;
+        }
+
+        .notif-item .notif-text p {
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .notif-item .notif-text span {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .notif-item.read {
+            opacity: 0.5;
+            border-right-color: var(--text-muted);
+        }
+
+        .notif-empty {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 30px 0;
+        }
+
+        .notif-empty i {
+            font-size: 48px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* ============================================================
+           تحريك
+           ============================================================ */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================================
+           استجابة
+           ============================================================ */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .header-center {
+                margin: 0 8px;
+            }
+
+            .header-right .user-profile span,
+            .header-right .user-profile .chevron {
+                display: none;
+            }
+
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+            }
+
+            .welcome-stats {
+                gap: 12px;
+            }
+
+            .stat-item {
+                padding: 6px 14px;
+            }
+
+            .sidebar {
+                width: 100%;
+                transform: translateX(100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .welcome-text h1 {
+                font-size: 22px;
+            }
+
+            .dashboard-header {
+                padding: 0 12px;
+                height: 58px;
+            }
+
+            .main-content {
+                padding: 12px 12px 75px 12px;
+                margin-top: 58px;
+            }
+
+            .bottom-nav {
+                height: 58px;
+            }
+
+            .bottom-nav a i {
+                font-size: 18px;
+            }
+
+            .bottom-nav a {
+                font-size: 9px;
+                padding: 3px 8px;
+            }
+
+            .search-bar input {
+                font-size: 13px;
+                padding: 6px 10px;
+            }
+
+            .search-btn {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+        }
+
         @media (max-width: 480px) {
-            .hero {
-                min-height: 20vh;
-                padding: 0.4rem 0.8rem;
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 10px;
             }
-            .hero-title {
-                font-size: 1.3rem;
+
+            .content-card img {
+                height: 140px;
             }
-            .hero-desc {
-                font-size: .75rem;
+
+            .content-card .card-info h4 {
+                font-size: 12px;
             }
-            .bottom-nav .nav-item {
-                font-size: .5rem;
-                padding: 0.1rem 0.3rem;
-                min-width: 40px;
+
+            .welcome-section {
+                padding: 18px;
             }
-            .bottom-nav .nav-item i {
-                font-size: 1rem;
+
+            .welcome-text h1 {
+                font-size: 19px;
             }
-            .teachers-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.5rem;
+
+            .stat-item span {
+                font-size: 15px;
             }
-            .contact-teachers-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.5rem;
+
+            .stat-item label {
+                font-size: 10px;
             }
-            .filter-buttons .filter-btn {
-                font-size: .6rem;
-                padding: 0.15rem 0.5rem;
-            }
-            .teacher-card .teacher-card-image {
-                width: 60px;
-                height: 60px;
-            }
-            .teacher-card .teacher-card-image .teacher-emoji {
-                font-size: 1.8rem;
-            }
-            .teacher-card-info h3 {
-                font-size: .8rem;
-            }
-            .teacher-card-info .teacher-subject {
-                font-size: .6rem;
-            }
-            .teacher-card-info .teacher-stats {
-                font-size: .55rem;
-            }
-            .my-courses-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.5rem;
-            }
-            .account-section .profile-stats {
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 0.4rem;
-            }
-            .account-section .stat-box .number {
-                font-size: 1.1rem;
-            }
-            .teacher-dashboard-card .dashboard-stats {
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 0.3rem;
-            }
-            .teacher-dashboard-card .dashboard-actions {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.3rem;
-            }
-            .modal-chat {
-                max-width: 100%;
-                max-height: 100vh;
-                border-radius: 0;
-            }
-            .chat-header {
-                border-radius: 0;
-            }
-            .chat-input-area {
-                border-radius: 0;
+
+            .modal-content {
+                max-width: 95%;
             }
         }
 
-        @media (max-width: 380px) {
-            .teachers-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.3rem;
-            }
-            .contact-teachers-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.3rem;
-            }
-            .teacher-card {
-                padding: 0.5rem 0.3rem;
-            }
-            .teacher-card .teacher-card-image {
-                width: 50px;
-                height: 50px;
-            }
-            .teacher-card .teacher-card-image .teacher-emoji {
-                font-size: 1.4rem;
-            }
-            .teacher-card-info h3 {
-                font-size: .7rem;
-            }
-            .contact-teacher-card .contact-avatar {
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
-            }
-            .contact-teacher-card .contact-name {
-                font-size: 0.8rem;
-            }
+        /* ============================================================
+           شاشة التحميل
+           ============================================================ */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: var(--text-secondary);
+            gap: 12px;
+        }
+
+        .loading-spinner i {
+            font-size: 28px;
+            color: var(--accent);
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <div id="loadingScreen" class="loading-screen">
-        <div class="spinner"></div>
-    </div>
 
-    <!-- ===== NAVBAR ===== -->
-    <nav class="navbar" id="navbar" style="display:none;">
-        <div class="nav-container">
-            <div class="nav-left">
-                <div class="logo">
-                    <span class="logo-text">ديف <span>أكاديمي</span></span>
-                </div>
-                <ul class="nav-links">
-                    <li class="active">
-                        <a href="#" data-page="home">
-                            <i class="fas fa-home"></i> الرئيسية
-                        </a>
-                    </li>
-                </ul>
+    <!-- ============================================================
+    الهيدر
+    ============================================================ -->
+    <header class="dashboard-header">
+        <div class="header-left">
+            <div class="menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
             </div>
-            <div class="nav-right">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="🔍 بحث..." />
-                    <button id="searchBtn"><i class="fas fa-search"></i></button>
-                </div>
-                <div class="nav-user-section">
-                    <div class="user-profile-btn" id="userProfileBtn">
-                        <span class="avatar" id="userAvatar">👤</span>
-                        <span class="user-name" id="userNameDisplay">غير مسجل</span>
-                    </div>
-                    <button class="theme-toggle" id="themeToggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                </div>
+            <div class="logo-small">🎬 DevFlix</div>
+        </div>
+
+        <div class="header-center">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="ابحث عما يعجبك..." oninput="handleSearch()">
+                <button class="search-btn" onclick="handleSearch()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
             </div>
         </div>
-    </nav>
 
-    <!-- ===== PAGE HOME ===== -->
-    <div id="page-home" style="display:none;">
-        <section class="hero" id="hero">
-            <div class="hero-content">
-                <h1 class="hero-title">📚 ديف <span>أكاديمي</span></h1>
-                <p class="hero-desc">منصة تعليمية متكاملة. اختر صفك وابدأ التعلم</p>
-                <div class="hero-buttons">
-                    <button class="btn-play" onclick="navigateTo('teachers')">
-                        <i class="fas fa-play"></i> استعراض المدرسين
-                    </button>
-                    <button class="btn-info" onclick="navigateTo('my-courses')">
-                        <i class="fas fa-book-open"></i> دوراتي
-                    </button>
+        <div class="header-right">
+            <button class="icon-btn" onclick="toggleTheme()" title="تغيير الوضع">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+            <button class="icon-btn" onclick="toggleNotifications()" title="الإشعارات">
+                <i class="fas fa-bell"></i>
+                <span class="badge" id="notifBadge">0</span>
+            </button>
+            <div class="user-profile" onclick="toggleProfile()">
+                <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=E50914&color=fff&size=40" alt="User">
+                <span id="userNameDisplay">مستخدم</span>
+                <i class="fas fa-chevron-down chevron"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================
+    القائمة الجانبية
+    ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-user">
+            <img id="sidebarAvatar" src="https://ui-avatars.com/api/?name=User&background=E50914&color=fff&size=70" alt="User">
+            <h3 id="sidebarUserName">مستخدم</h3>
+            <p id="sidebarUserEmail">user@email.com</p>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="active" onclick="navigateTo('home')">
+                <i class="fas fa-home"></i> الرئيسية
+            </a>
+            <a href="#" onclick="navigateTo('explore')">
+                <i class="fas fa-compass"></i> استكشاف
+            </a>
+            <a href="#" onclick="navigateTo('watchlist')">
+                <i class="fas fa-bookmark"></i> قائمة المشاهدة
+            </a>
+            <a href="#" onclick="navigateTo('history')">
+                <i class="fas fa-clock"></i> سجل المشاهدة
+            </a>
+            <a href="#" onclick="navigateTo('downloads')">
+                <i class="fas fa-download"></i> التحميلات
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button onclick="handleLogout()" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+            </button>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+    المحتوى الرئيسي
+    ============================================================ -->
+    <main class="main-content" id="mainContent">
+
+        <!-- قسم الترحيب -->
+        <section class="welcome-section">
+            <div class="welcome-text">
+                <h1>مرحباً <span id="welcomeName">مستخدم</span> 👋</h1>
+                <p>اكتشف أفضل الأفلام والمسلسلات التي تنتظرك</p>
+            </div>
+            <div class="welcome-stats">
+                <div class="stat-item">
+                    <i class="fas fa-film"></i>
+                    <span id="moviesCount">0</span>
+                    <label>فيلم</label>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-tv"></i>
+                    <span id="seriesCount">0</span>
+                    <label>مسلسل</label>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-play-circle"></i>
+                    <span id="watchCount">0</span>
+                    <label>مشاهدة</label>
                 </div>
             </div>
         </section>
 
-        <div class="teachers-container" id="teachersContainer">
-            <!-- ===== فلتر الأقسام ===== -->
-            <div class="filter-section">
-                <div class="filter-header">
-                    <div class="filter-label">
-                        <i class="fas fa-filter"></i> تصفية حسب الصف
-                    </div>
-                    <div class="filter-result">
-                        🧑‍🏫 <span id="teachersCount">0</span> مدرس
-                    </div>
-                </div>
-                <div class="filter-buttons" id="sectionFilter"></div>
-            </div>
-            <!-- ===== المدرسين ===== -->
-            <div id="teachersGridContainer"></div>
+        <!-- حاوية المحتوى -->
+        <div id="contentSections">
+            <!-- سيتم ملؤها بواسطة JavaScript -->
         </div>
-    </div>
 
-    <!-- ===== PAGE MY COURSES ===== -->
-    <div id="page-my-courses" style="display:none;">
-        <div class="my-courses-section">
-            <div class="section-header">
-                <h2>
-                    <i class="fas fa-book-open"></i> دوراتي
-                </h2>
-                <span id="myCoursesCount" style="color:var(--text-light);font-size:.9rem;font-weight:600;">0 دورة</span>
-            </div>
-            <div id="myCoursesContainer"></div>
+        <!-- شاشة التحميل -->
+        <div id="loadingContent" class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>جاري التحميل...</span>
         </div>
-    </div>
+    </main>
 
-    <!-- ===== PAGE TEACHERS ===== -->
-    <div id="page-teachers" style="display:none;">
-        <div class="teachers-container" style="padding-top:0.5rem;">
-            <div class="teachers-page-header">
-                <h2>👨‍🏫 جميع المدرسين</h2>
-                <p>اختر الصف المناسب ثم اختر المدرس</p>
-            </div>
-            <div class="filter-section">
-                <div class="filter-header">
-                    <div class="filter-label">
-                        <i class="fas fa-filter"></i> تصفية حسب الصف
-                    </div>
-                    <div class="filter-result">
-                        🧑‍🏫 <span id="teachersCount2">0</span> مدرس
-                    </div>
-                </div>
-                <div class="filter-buttons" id="sectionFilter2"></div>
-            </div>
-            <div id="teachersGridContainer2"></div>
-        </div>
-    </div>
+    <!-- ============================================================
+    الشريط السفلي
+    ============================================================ -->
+    <nav class="bottom-nav">
+        <a href="#" class="active" onclick="navigateTo('home')">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </a>
+        <a href="#" onclick="navigateTo('search')">
+            <i class="fas fa-search"></i>
+            <span>بحث</span>
+        </a>
+        <a href="#" onclick="toggleNotifications()">
+            <i class="fas fa-bell"></i>
+            <span>الإشعارات</span>
+            <span class="badge" id="bottomNotifBadge">0</span>
+        </a>
+        <a href="#" onclick="toggleProfile()">
+            <i class="fas fa-user"></i>
+            <span>ملفي الشخصي</span>
+        </a>
+    </nav>
 
-    <!-- ===== PAGE CONTACT ===== -->
-    <div id="page-contact" style="display:none;">
-        <div class="contact-section">
-            <div class="contact-header">
-                <h2><i class="fas fa-comments"></i> التواصل مع المدرسين</h2>
-                <p>تواصل مع المدرسين الذين اشتركت في دوراتهم</p>
+    <!-- ============================================================
+    مودال الإشعارات
+    ============================================================ -->
+    <div class="modal" id="notifModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell"></i> الإشعارات</h3>
+                <button onclick="closeModal('notifModal')"><i class="fas fa-times"></i></button>
             </div>
-
-            <div class="contact-info-banner">
-                <i class="fas fa-info-circle"></i>
-                <span>📌 يمكنك التواصل فقط مع المدرسين الذين اشتركت في دوراتهم</span>
-            </div>
-
-            <div class="filter-section">
-                <div class="filter-header">
-                    <div class="filter-label">
-                        <i class="fas fa-users"></i> المدرسين المتاحين للتواصل
-                    </div>
-                    <div class="filter-result">
-                        👤 <span id="contactTeachersCount">0</span> مدرس
-                    </div>
-                </div>
-            </div>
-
-            <div id="contactTeachersContainer">
-                <div class="contact-teachers-grid" id="contactTeachersGrid"></div>
+            <div class="modal-body" id="notifList">
+                <!-- سيتم ملؤها بواسطة JavaScript -->
             </div>
         </div>
     </div>
 
-    <!-- ===== PAGE ACCOUNT ===== -->
-    <div id="page-account" style="display:none;">
-        <div class="account-section">
-            <div class="profile-header">
-                <div class="profile-avatar" id="accountAvatar">👤</div>
-                <div class="profile-name" id="accountName">غير مسجل</div>
-                <div class="profile-email" id="accountEmail">البريد الإلكتروني</div>
-                <div style="font-size:.75rem;color:var(--text-light);margin-top:0.2rem;" id="accountRegistered">مسجل منذ: --</div>
+    <!-- ============================================================
+    مودال الملف الشخصي
+    ============================================================ -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content profile-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> ملفي الشخصي</h3>
+                <button onclick="closeModal('profileModal')"><i class="fas fa-times"></i></button>
             </div>
-            <div class="profile-stats">
-                <div class="stat-box">
-                    <div class="number" id="accountCourses">0</div>
-                    <div class="label">📚 دوراتي</div>
+            <div class="modal-body">
+                <div class="profile-info">
+                    <img id="profileAvatar" src="https://ui-avatars.com/api/?name=User&background=E50914&color=fff&size=100" alt="User" class="profile-avatar">
+                    <h3 id="profileName">مستخدم</h3>
+                    <p id="profileEmail">user@email.com</p>
+                    <span class="profile-badge" id="profileRole">👤 مستخدم</span>
                 </div>
-                <div class="stat-box">
-                    <div class="number" id="accountCodes">0</div>
-                    <div class="label">🔑 أكواد مفعلة</div>
+                <div class="profile-stats">
+                    <div><span id="profileMovies">0</span> فيلم</div>
+                    <div><span id="profileSeries">0</span> مسلسل</div>
+                    <div><span id="profileWatched">0</span> مشاهدة</div>
                 </div>
-                <div class="stat-box">
-                    <div class="number" id="accountMessages">0</div>
-                    <div class="label">✉️ رسائلي</div>
-                </div>
-            </div>
-
-            <!-- ===== رسائلي المرسلة ===== -->
-            <div class="messages-section">
-                <h3><i class="fas fa-envelope"></i> رسائلي المرسلة</h3>
-                <div id="myMessagesList">
-                    <p style="color:var(--text-light);font-size:0.8rem;text-align:center;">لا توجد رسائل</p>
-                </div>
-            </div>
-
-            <!-- ===== رسائل المدرس الواردة ===== -->
-            <div id="teacherInboxSection" style="display:none;margin-top:1rem;background:var(--bg-card);border-radius:12px;padding:0.8rem;border:2px solid var(--primary);">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;padding-bottom:0.3rem;border-bottom:2px solid var(--border);">
-                    <h3 style="font-size:0.9rem;color:var(--text);">
-                        <i class="fas fa-inbox" style="color:var(--primary);"></i> رسائلي الواردة
-                    </h3>
-                    <span id="teacherInboxCount" style="background:var(--primary-gradient);color:white;padding:0.1rem 0.6rem;border-radius:20px;font-size:0.7rem;font-weight:700;">0</span>
-                </div>
-                <div id="teacherInboxMessages">
-                    <p style="color:var(--text-light);font-size:0.8rem;text-align:center;">لا توجد رسائل واردة</p>
-                </div>
-            </div>
-
-            <!-- ===== لوحة تحكم المدرس ===== -->
-            <div id="teacherDashboard" style="display:none;margin-top:1rem;background:var(--bg-card);border-radius:12px;padding:0.8rem;border:2px solid var(--primary);">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;padding-bottom:0.5rem;border-bottom:2px solid var(--primary);">
-                    <h3 style="font-size:1rem;color:var(--text);">
-                        <i class="fas fa-chalkboard-teacher" style="color:var(--primary);"></i> لوحة تحكم المدرس
-                    </h3>
-                    <span style="background:var(--primary-gradient);color:white;padding:0.1rem 0.6rem;border-radius:20px;font-size:0.7rem;font-weight:700;">
-                        👨‍🏫 نشط
-                    </span>
-                </div>
-
-                <div class="dashboard-stats">
-                    <div class="stat-item">
-                        <div class="stat-number" id="teacherStatsCourses">0</div>
-                        <div class="stat-label">📚 فصولي</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="teacherStatsLectures">0</div>
-                        <div class="stat-label">🎥 محاضراتي</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="teacherStatsStudents">0</div>
-                        <div class="stat-label">👨‍🎓 طلابي</div>
-                    </div>
-                </div>
-
-                <div class="dashboard-actions">
-                    <button class="btn-dash-primary" onclick="openTeacherAdmin()">
-                        <i class="fas fa-cog"></i> إدارة المحاضرات
-                    </button>
-                    <button class="btn-dash-purple" onclick="openTeacherCodes()">
-                        <i class="fas fa-key"></i> أكوادي
-                    </button>
-                    <button class="btn-dash-green" onclick="openTeacherStudents()">
-                        <i class="fas fa-users"></i> طلابي
-                    </button>
-                    <button class="btn-dash-orange" onclick="openTeacherMessages()">
-                        <i class="fas fa-envelope"></i> رسائلي
-                    </button>
-                </div>
-            </div>
-
-            <div class="account-actions">
-                <button class="btn-admin" id="adminPanelBtn" style="display:none;">
-                    <i class="fas fa-cog"></i> لوحة الإدارة
-                </button>
-                <button class="btn-logout-account" id="logoutAccountBtn">
+                <button onclick="handleLogout()" class="logout-btn full">
                     <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ===== BOTTOM NAV ===== -->
-    <nav class="bottom-nav" id="bottomNav" style="display:none;">
-        <button class="nav-item active" data-page="home">
-            <i class="fas fa-home"></i>
-            <span>الرئيسية</span>
-        </button>
-        <button class="nav-item" data-page="teachers">
-            <i class="fas fa-chalkboard-teacher"></i>
-            <span>المدرسون</span>
-        </button>
-        <button class="nav-item" data-page="my-courses">
-            <i class="fas fa-book-open"></i>
-            <span>دوراتي</span>
-            <span class="badge" id="coursesBadge" style="display:none;">0</span>
-        </button>
-        <button class="nav-item" data-page="contact">
-            <i class="fas fa-phone-alt"></i>
-            <span>التواصل</span>
-            <span class="badge" id="contactBadge" style="display:none;">0</span>
-        </button>
-        <button class="nav-item" data-page="account">
-            <i class="fas fa-user"></i>
-            <span>حسابي</span>
-        </button>
-    </nav>
-
-    <footer class="footer" style="padding-bottom:70px;display:none;" id="footer">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <span class="logo-text">ديف <span>أكاديمي</span></span>
-                <p style="font-size:.7rem;">© 2026 ديف أكاديمي</p>
-            </div>
-            <div class="footer-links">
-                <a href="#"><i class="fas fa-globe"></i> العربية</a>
-                <a href="#"><i class="fas fa-question-circle"></i> المساعدة</a>
-                <a href="#"><i class="fas fa-shield-alt"></i> الخصوصية</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- ===== MODALS ===== -->
-    <div class="modal-overlay" id="teachersModal">
-        <div class="modal modal-large">
-            <button class="close-btn" id="closeTeachersModal"><i class="fas fa-times"></i></button>
-            <h2 id="modalDepartmentTitle">📚 المدرسون</h2>
-            <div class="teachers-list" id="teachersList"></div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="semestersModal">
-        <div class="modal modal-large">
-            <button class="close-btn" id="closeSemestersModal"><i class="fas fa-times"></i></button>
-            <h2 id="modalTeacherTitle">👨‍🏫 اسم المدرس</h2>
-            <div class="semesters-list" id="semestersList"></div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="lecturesModal">
-        <div class="modal modal-large">
-            <button class="close-btn" id="closeLecturesModal"><i class="fas fa-times"></i></button>
-            <h2 id="modalSemesterTitle">📖 الفصل</h2>
-            <div class="lectures-list" id="lecturesList"></div>
-        </div>
-    </div>
-
-    <!-- ===== CONTACT MODAL ===== -->
-    <div class="modal-overlay" id="contactModal">
-        <div class="modal modal-small">
-            <button class="close-btn" id="closeContactModal"><i class="fas fa-times"></i></button>
-            <h2 id="contactTeacherName">📩 التواصل مع المدرس</h2>
-            <div class="contact-info-box">
-                <div class="contact-user">
-                    <div class="contact-avatar" id="contactAvatar">👤</div>
-                    <div class="contact-user-info">
-                        <div class="contact-name" id="contactNameDisplay"></div>
-                        <div class="contact-subject" id="contactSubjectDisplay"></div>
-                    </div>
-                </div>
-                <div class="contact-hint">
-                    <i class="fas fa-info-circle"></i> أرسل رسالتك وسيتم إشعار المدرس
-                </div>
-            </div>
-            <form id="contactForm">
-                <div class="form-group">
-                    <label>📝 عنوان الرسالة</label>
-                    <input type="text" id="contactSubject" placeholder="عنوان الرسالة" required />
-                </div>
-                <div class="form-group">
-                    <label>💬 نص الرسالة</label>
-                    <textarea id="contactMessage" rows="4" placeholder="اكتب رسالتك هنا..." required></textarea>
-                </div>
-                <div class="form-group">
-                    <label>📎 مرفق (اختياري)</label>
-                    <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
-                        <button type="button" onclick="attachFile('image')" class="btn-attach">
-                            <i class="fas fa-image"></i> صورة
-                        </button>
-                        <button type="button" onclick="attachFile('file')" class="btn-attach">
-                            <i class="fas fa-paperclip"></i> ملف
-                        </button>
-                    </div>
-                    <div class="attachments-list" id="attachmentsList"></div>
-                </div>
-                <button type="submit" class="btn-submit" style="width:100%;padding:0.6rem;background:var(--primary-gradient);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.4rem;">
-                    <i class="fas fa-paper-plane"></i> إرسال
-                </button>
-                <div id="contactMessageStatus" style="text-align:center;font-weight:600;margin-top:0.3rem;font-size:0.8rem;"></div>
-            </form>
-        </div>
-    </div>
-
-    <!-- ===== CHAT MODAL ===== -->
-    <div class="modal-overlay" id="chatModal">
-        <div class="modal modal-chat chat-theme-light">
-            <!-- رأس المحادثة -->
-            <div class="chat-header">
-                <div class="chat-user">
-                    <div class="chat-avatar" id="chatAvatar">👤</div>
-                    <div class="chat-user-info">
-                        <div class="chat-name" id="chatTeacherName">المدرس</div>
-                        <div class="chat-status">
-                            <span id="chatOnlineStatus">🟢 متصل</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="chat-actions">
-                    <button onclick="toggleChatTheme()" id="chatThemeBtn" title="تبديل المظهر">
-                        <i class="fas fa-moon" id="chatThemeIcon"></i>
-                    </button>
-                    <button class="close-btn" id="closeChatModal" style="color:white;font-size:1.2rem;">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- منطقة الرسائل -->
-            <div class="chat-messages-area" id="chatMessages">
-                <div style="text-align:center;color:var(--text-light);font-size:0.8rem;padding:1rem 0;">
-                    <i class="fas fa-comment" style="font-size:2rem;display:block;margin-bottom:0.5rem;opacity:0.3;"></i>
-                    لا توجد رسائل بعد، ابدأ المحادثة!
-                </div>
-            </div>
-
-            <!-- منطقة الإدخال -->
-            <div class="chat-input-area">
-                <div class="chat-tools" id="chatTools">
-                    <button onclick="chatAttach('image')" class="chat-attach-btn">
-                        <i class="fas fa-image"></i> صورة
-                    </button>
-                    <button onclick="chatAttach('video')" class="chat-attach-btn">
-                        <i class="fas fa-video"></i> فيديو
-                    </button>
-                    <button onclick="chatAttach('file')" class="chat-attach-btn">
-                        <i class="fas fa-paperclip"></i> ملف
-                    </button>
-                    <button onclick="chatAttach('audio')" class="chat-attach-btn">
-                        <i class="fas fa-microphone"></i> صوت
-                    </button>
-                    <span id="chatAttachmentsList" style="display:flex;gap:0.3rem;flex-wrap:wrap;flex:1;"></span>
-                </div>
-                <div class="chat-input-row">
-                    <textarea id="chatInput" rows="1" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage();}"></textarea>
-                    <button class="btn-send" onclick="sendChatMessage()">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== TEACHER ADMIN MODAL ===== -->
-    <div class="modal-overlay" id="teacherAdminModal">
-        <div class="modal modal-large">
-            <button class="close-btn" id="closeTeacherAdmin"><i class="fas fa-times"></i></button>
-            <h2><i class="fas fa-chalkboard-teacher"></i> لوحة إدارة المدرس</h2>
-            <p style="text-align:center;color:var(--text-light);font-size:0.85rem;margin-bottom:0.8rem;" id="teacherAdminName"></p>
-
-            <div class="admin-tabs" style="margin-bottom:0.5rem;">
-                <button class="tab-btn active" data-tab="teacher-add-semester">📀 فصل</button>
-                <button class="tab-btn" data-tab="teacher-add-lecture">🎥 محاضرة</button>
-                <button class="tab-btn" data-tab="teacher-codes">🔑 أكواد</button>
-                <button class="tab-btn" data-tab="teacher-lectures">📚 محاضراتي</button>
-            </div>
-
-            <!-- إضافة فصل -->
-            <div class="tab-content active" id="tab-teacher-add-semester">
-                <form id="teacherAddSemesterForm" class="admin-form">
-                    <h3>📀 إضافة فصل جديد</h3>
-                    <div class="form-group">
-                        <label>🔢 رقم الفصل *</label>
-                        <input type="number" id="teacherSemesterNumber" placeholder="1" min="1" required />
-                    </div>
-                    <div class="form-group">
-                        <label>📄 وصف الفصل</label>
-                        <input type="text" id="teacherSemesterDesc" placeholder="الفصل الأول - أساسيات" />
-                    </div>
-                    <button type="submit" class="btn-submit"><i class="fas fa-plus"></i> إضافة فصل</button>
-                </form>
-            </div>
-
-            <!-- إضافة محاضرة -->
-            <div class="tab-content" id="tab-teacher-add-lecture">
-                <form id="teacherAddLectureForm" class="admin-form">
-                    <h3>🎥 إضافة محاضرة جديدة</h3>
-                    <div class="form-group">
-                        <label>📀 اختيار الفصل *</label>
-                        <select id="teacherLectureSemester" required>
-                            <option value="">اختر الفصل...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>🔢 رقم المحاضرة *</label>
-                        <input type="number" id="teacherLectureNumber" placeholder="1" min="1" required />
-                    </div>
-                    <div class="form-group">
-                        <label>📝 عنوان المحاضرة *</label>
-                        <input type="text" id="teacherLectureTitle" placeholder="عنوان المحاضرة" required />
-                    </div>
-                    <div class="form-group">
-                        <label>📹 رابط الفيديو *</label>
-                        <input type="url" id="teacherLectureUrl" placeholder="https://player.mediadelivery.net/play/..." required />
-                        <small style="color:var(--text-light);font-size:.65rem;display:block;margin-top:2px;">يدعم mediadelivery و YouTube</small>
-                    </div>
-                    <div class="form-group">
-                        <label>🔒 الحالة</label>
-                        <select id="teacherLectureFree">
-                            <option value="true">🆓 مجانية</option>
-                            <option value="false">🔒 مقفلة (تحتاج كود)</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn-submit"><i class="fas fa-plus"></i> إضافة محاضرة</button>
-                </form>
-            </div>
-
-            <!-- أكواد المدرس -->
-            <div class="tab-content" id="tab-teacher-codes">
-                <h3 style="font-size:0.9rem;margin-bottom:0.3rem;">🔑 أكواد التفعيل الخاصة بي</h3>
-                <p style="color:var(--text-light);font-size:0.75rem;margin-bottom:0.5rem;">هذه الأكواد يستخدمها الطلاب للاشتراك في دوراتك</p>
-                <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem;">
-                    <input type="text" id="teacherManualCode" placeholder="أدخل كود جديد..." maxlength="20" style="flex:1;min-width:120px;padding:0.4rem;border:1.5px solid var(--border);border-radius:8px;background:var(--bg-card);color:var(--text);font-size:0.85rem;outline:none;text-align:center;letter-spacing:2px;font-weight:700;font-family:monospace;" />
-                    <button onclick="teacherAddCode()" style="padding:0.3rem 0.8rem;background:var(--primary);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">➕ إضافة</button>
-                    <button onclick="teacherGenerateCodes(5)" style="padding:0.3rem 0.8rem;background:#22c55e;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">🔀 توليد 5</button>
-                </div>
-                <div id="teacherCodesContainer">
-                    <p style="color:var(--text-light);text-align:center;font-size:0.8rem;">لا توجد أكواد</p>
-                </div>
-            </div>
-
-            <!-- محاضراتي -->
-            <div class="tab-content" id="tab-teacher-lectures">
-                <h3 style="font-size:0.9rem;margin-bottom:0.3rem;">📚 محاضراتي</h3>
-                <p style="color:var(--text-light);font-size:0.75rem;margin-bottom:0.5rem;">جميع المحاضرات التي قمت بإضافتها</p>
-                <div id="teacherLecturesList">
-                    <p style="color:var(--text-light);text-align:center;font-size:0.8rem;">لا توجد محاضرات</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== TEACHER STUDENTS MODAL ===== -->
-    <div class="modal-overlay" id="teacherStudentsModal">
-        <div class="modal modal-large">
-            <button class="close-btn" id="closeTeacherStudents"><i class="fas fa-times"></i></button>
-            <h2><i class="fas fa-users"></i> طلابي</h2>
-            <p style="text-align:center;color:var(--text-light);font-size:0.85rem;margin-bottom:0.8rem;" id="teacherStudentsName"></p>
-            <div id="teacherStudentsList">
-                <p style="color:var(--text-light);text-align:center;font-size:0.8rem;">لا يوجد طلاب مسجلين</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== TEACHER MESSAGES MODAL ===== -->
-    <div class="modal-overlay" id="teacherMessagesModal">
-        <div class="modal modal-large">
-            <button class="close-btn" id="closeTeacherMessages"><i class="fas fa-times"></i></button>
-            <h2><i class="fas fa-envelope"></i> رسائلي من الطلاب</h2>
-            <p style="text-align:center;color:var(--text-light);font-size:0.85rem;margin-bottom:0.8rem;" id="teacherMessagesName"></p>
-            <div id="teacherMessagesList">
-                <p style="color:var(--text-light);text-align:center;font-size:0.8rem;">لا توجد رسائل</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== VIDEO PLAYER ===== -->
-    <div class="video-player-container" id="videoPlayer">
-        <div class="video-player-wrapper">
-            <button class="close-player" id="closePlayer"><i class="fas fa-times"></i></button>
-            <div class="player-container" id="playerContainer">
-                <div id="videoWrapper" style="position:relative;padding-top:56.25%;width:100%;height:0;"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="toast-container" id="toastContainer"></div>
-
     <!-- ============================================================
-    ADMIN PANEL
+    الجافا سكريبت
     ============================================================ -->
-    <div class="admin-panel" id="adminPanel">
-        <div class="admin-content">
-            <div class="admin-header">
-                <h2><i class="fas fa-cog"></i> لوحة التحكم</h2>
-                <button class="admin-close" id="adminClose"><i class="fas fa-times"></i></button>
-            </div>
+    <script>
+        // ============================================================
+        // إعداد Supabase
+        // ============================================================
+        const supabaseUrl = 'https://hdtrnfpwyvaeziaiweck.supabase.co'
+        const supabaseKey = 'sb_publishable_XYiUfizde8-Z0yBjvZNsBw_q_LSXK7V'
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey)
 
-            <div class="admin-tabs">
-                <button class="tab-btn active" data-tab="add-section">📚 قسم</button>
-                <button class="tab-btn" data-tab="add-teacher">➕ مدرس</button>
-                <button class="tab-btn" data-tab="add-semester">📀 فصل</button>
-                <button class="tab-btn" data-tab="add-lecture">🎥 محاضرة</button>
-                <button class="tab-btn" data-tab="manage-codes">🔑 أكواد</button>
-                <button class="tab-btn" data-tab="edit-teacher">✏️ تعديل</button>
-                <button class="tab-btn" data-tab="delete">🗑️ حذف</button>
-                <button class="tab-btn" data-tab="users">👥 مستخدمين</button>
-                <button class="tab-btn" data-tab="add-admin">👑 أدمن</button>
-                <button class="tab-btn" data-tab="teacher-management">👨‍🏫 المدرسين</button>
-                <button class="tab-btn" data-tab="contact-messages">✉️ الرسائل</button>
-                <button class="tab-btn" data-tab="publish">📤 نشر</button>
-            </div>
+        // ============================================================
+        // المتغيرات العامة
+        // ============================================================
+        let currentUser = null
+        let allContent = []
+        let filteredContent = []
+        let notifications = []
+        let isAdmin = false
 
-            <!-- ===== ADD SECTION ===== -->
-            <div class="tab-content active" id="tab-add-section">
-                <form id="addSectionForm" class="admin-form">
-                    <h3>📚 إضافة قسم</h3>
-                    <div class="form-group">
-                        <label>📝 اسم القسم *</label>
-                        <input type="text" id="sectionName" placeholder="أول متوسط" required />
-                    </div>
-                    <button type="submit" class="btn-submit"><i class="fas fa-plus"></i> إضافة</button>
-                </form>
-            </div>
+        // ============================================================
+        // دوال التحقق من الجلسة
+        // ============================================================
+        async function checkSession() {
+            try {
+                // التحقق من الجلسة المخزنة
+                const session = localStorage.getItem('devflix_session')
+                if (session) {
+                    const { data, error } = await supabaseClient.auth.setSession(JSON.parse(session))
+                    if (!error && data.user) {
+                        currentUser = data.user
+                        return true
+                    }
+                }
 
-            <!-- ===== ADD TEACHER ===== -->
-            <div class="tab-content" id="tab-add-teacher">
-                <form id="addTeacherForm" class="admin-form">
-                    <h3>👨‍🏫 إضافة مدرس</h3>
-                    <div class="form-group">
-                        <label>📚 القسم *</label>
-                        <select id="teacherSection" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>📝 اسم المدرس *</label>
-                        <input type="text" id="teacherName" placeholder="اسم المدرس" required />
-                    </div>
-                    <div class="form-group">
-                        <label>😊 رمز تعبيري</label>
-                        <input type="text" id="teacherEmoji" value="🧑‍🏫" maxlength="2" />
-                    </div>
-                    <div class="form-group">
-                        <label>📚 التخصص</label>
-                        <input type="text" id="teacherSubject" placeholder="مدرس رياضيات" />
-                    </div>
-                    <div class="form-group">
-                        <label>📄 وصف</label>
-                        <textarea id="teacherDesc" rows="2" placeholder="وصف مختصر"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>🖼️ رابط الصورة</label>
-                        <input type="url" id="teacherImage" placeholder="https://..." />
-                    </div>
-                    <button type="submit" class="btn-submit"><i class="fas fa-plus"></i> إضافة</button>
-                </form>
-            </div>
+                // التحقق من الجلسة الحالية
+                const { data: { user } } = await supabaseClient.auth.getUser()
+                if (user) {
+                    currentUser = user
+                    return true
+                }
 
-            <!-- ===== ADD SEMESTER ===== -->
-            <div class="tab-content" id="tab-add-semester">
-                <form id="addSemesterForm" class="admin-form">
-                    <h3>📀 إضافة فصل</h3>
-                    <div class="form-group">
-                        <label>📚 القسم *</label>
-                        <select id="semesterSection" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>👨‍🏫 المدرس *</label>
-                        <select id="semesterTeacher" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>🔢 رقم الفصل *</label>
-                        <input type="number" id="semesterNumber" placeholder="1" min="1" required />
-                    </div>
-                    <div class="form-group">
-                        <label>📄 وصف الفصل</label>
-                        <input type="text" id="semesterDesc" placeholder="الفصل الأول" />
-                    </div>
-                    <button type="submit" class="btn-submit"><i class="fas fa-plus"></i> إضافة</button>
-                </form>
-            </div>
+                return false
+            } catch (e) {
+                return false
+            }
+        }
 
-            <!-- ===== ADD LECTURE ===== -->
-            <div class="tab-content" id="tab-add-lecture">
-                <form id="addLectureForm" class="admin-form">
-                    <h3>🎥 إضافة محاضرة</h3>
-                    <div class="form-group">
-                        <label>📚 القسم *</label>
-                        <select id="lectureSection" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>👨‍🏫 المدرس *</label>
-                        <select id="lectureTeacher" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>📀 الفصل *</label>
-                        <select id="lectureSemester" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>🔢 رقم المحاضرة *</label>
-                        <input type="number" id="lectureNumber" placeholder="1" min="1" required />
-                    </div>
-                    <div class="form-group">
-                        <label>📝 العنوان *</label>
-                        <input type="text" id="lectureTitle" placeholder="عنوان المحاضرة" required />
-                    </div>
-                    <div class="form-group">
-                        <label>📹 رابط الفيديو *</label>
-                        <input type="url" id="lectureUrl" placeholder="https://player.mediadelivery.net/play/..." required />
-                        <small style="color:var(--text-light);font-size:.65rem;display:block;margin-top:2px;">يدعم mediadelivery و YouTube</small>
-                    </div>
-                    <div class="form-group">
-                        <label>🔒 الحالة *</label>
-                        <select id="lectureFree">
-                            <option value="true">🆓 مجانية</option>
-                            <option value="false">🔒 مقفلة</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn-submit"><i class="fas fa-plus"></i> إضافة</button>
-                </form>
-            </div>
+        // ============================================================
+        // دوال تحميل البيانات
+        // ============================================================
+        async function loadUserData() {
+            if (!currentUser) return
 
-            <!-- ===== MANAGE CODES ===== -->
-            <div class="tab-content" id="tab-manage-codes">
-                <div class="codes-management">
-                    <h3 style="font-size:.9rem;margin-bottom:0.5rem;">🔑 إدارة الأكواد</h3>
-                    <div class="form-group">
-                        <label>📚 القسم</label>
-                        <select id="codeSection" required></select>
+            try {
+                // جلب بيانات المستخدم من جدول users
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('email', currentUser.email)
+                    .single()
+
+                if (data) {
+                    isAdmin = data.role === 'admin'
+                    currentUser.full_name = data.full_name || currentUser.user_metadata?.full_name || 'مستخدم'
+                } else {
+                    // إذا لم يكن في جدول users، استخدم metadata
+                    currentUser.full_name = currentUser.user_metadata?.full_name || 'مستخدم'
+                }
+
+                // تحديث الواجهة
+                updateUserUI()
+            } catch (e) {
+                console.error('خطأ في تحميل بيانات المستخدم:', e)
+            }
+        }
+
+        async function loadContent() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('content')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+
+                if (error) throw error
+
+                allContent = data || []
+                filteredContent = allContent
+                renderContent()
+                updateStats()
+            } catch (e) {
+                console.error('خطأ في تحميل المحتوى:', e)
+            }
+        }
+
+        async function loadNotifications() {
+            if (!currentUser) return
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('notifications')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+
+                if (error) throw error
+
+                notifications = data || []
+                updateNotificationBadge()
+            } catch (e) {
+                console.error('خطأ في تحميل الإشعارات:', e)
+            }
+        }
+
+        // ============================================================
+        // دوال تحديث الواجهة
+        // ============================================================
+        function updateUserUI() {
+            const name = currentUser?.full_name || 'مستخدم'
+            const email = currentUser?.email || ''
+
+            // تحديث جميع عناصر اسم المستخدم
+            document.querySelectorAll('#userNameDisplay, #sidebarUserName, #welcomeName, #profileName').forEach(el => {
+                el.textContent = name
+            })
+
+            document.querySelectorAll('#sidebarUserEmail, #profileEmail').forEach(el => {
+                el.textContent = email
+            })
+
+            // تحديث الصور
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=E50914&color=fff&size=100`
+            document.querySelectorAll('#userAvatar, #sidebarAvatar, #profileAvatar').forEach(el => {
+                el.src = avatarUrl
+            })
+
+            // تحديث دور المستخدم
+            const roleEl = document.getElementById('profileRole')
+            if (roleEl) {
+                roleEl.textContent = isAdmin ? '👑 مدير' : '👤 مستخدم'
+            }
+
+            // إظهار زر الإدارة للمدمن
+            if (isAdmin) {
+                const nav = document.querySelector('.sidebar-nav')
+                const adminLink = document.createElement('a')
+                adminLink.href = '#'
+                adminLink.onclick = () => navigateTo('admin')
+                adminLink.innerHTML = '<i class="fas fa-cog"></i> لوحة التحكم'
+                nav.appendChild(adminLink)
+            }
+        }
+
+        function updateStats() {
+            const films = allContent.filter(c => c.type === 'film').length
+            const series = allContent.filter(c => c.type === 'series').length
+            const cartoons = allContent.filter(c => c.type === 'cartoon').length
+
+            document.getElementById('moviesCount').textContent = films + cartoons
+            document.getElementById('seriesCount').textContent = series
+            document.getElementById('watchCount').textContent = allContent.length
+
+            // تحديث إحصائيات الملف الشخصي
+            document.getElementById('profileMovies').textContent = films + cartoons
+            document.getElementById('profileSeries').textContent = series
+            document.getElementById('profileWatched').textContent = allContent.length
+        }
+
+        function updateNotificationBadge() {
+            const unread = notifications.filter(n => !n.is_read).length
+            document.querySelectorAll('#notifBadge, #bottomNotifBadge').forEach(el => {
+                el.textContent = unread
+                el.style.display = unread > 0 ? 'block' : 'none'
+            })
+        }
+
+        // ============================================================
+        // دوال عرض المحتوى
+        // ============================================================
+        function renderContent(filter = null) {
+            const container = document.getElementById('contentSections')
+            const loading = document.getElementById('loadingContent')
+
+            let data = filter ? allContent.filter(c => c.type === filter) : allContent
+            if (filteredContent.length > 0 && !filter) {
+                data = filteredContent
+            }
+
+            // تصنيف المحتوى
+            const films = data.filter(c => c.type === 'film')
+            const series = data.filter(c => c.type === 'series')
+            const cartoons = data.filter(c => c.type === 'cartoon')
+
+            let html = ''
+
+            // قسم الأفلام
+            if (films.length > 0) {
+                html += createSection('🎬 أفلام', 'film', films)
+            }
+
+            // قسم المسلسلات
+            if (series.length > 0) {
+                html += createSection('📺 مسلسلات', 'series', series)
+            }
+
+            // قسم الكرتون
+            if (cartoons.length > 0) {
+                html += createSection('🎨 كرتون', 'cartoon', cartoons)
+            }
+
+            if (!html) {
+                html = `
+                    <div style="text-align:center;padding:60px 20px;color:var(--text-secondary);">
+                        <i class="fas fa-inbox" style="font-size:48px;margin-bottom:15px;display:block;color:var(--text-muted);"></i>
+                        <h3 style="font-size:20px;color:var(--text-primary);">لا يوجد محتوى</h3>
+                        <p>سيظهر هنا كل ما هو جديد</p>
                     </div>
-                    <div class="form-group">
-                        <label>👨‍🏫 المدرس</label>
-                        <select id="codeTeacherSelect" required></select>
-                    </div>
-                    <div class="manual-code-section">
-                        <h4>✏️ إضافة كود</h4>
-                        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
-                            <input type="text" id="manualCodeInput" placeholder="أدخل الكود..." maxlength="20" style="flex:1;min-width:100px;padding:0.4rem;border:1.5px solid var(--border);border-radius:8px;background:var(--bg-card);color:var(--text);font-size:.85rem;outline:none;text-align:center;letter-spacing:2px;font-weight:700;font-family:monospace;" />
-                            <button onclick="addManualCode()" style="padding:0.3rem 0.8rem;background:var(--primary);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">➕ إضافة</button>
-                        </div>
-                        <div id="manualCodeMessage"></div>
-                    </div>
-                    <div class="code-actions" style="display:flex;gap:0.4rem;margin:0.5rem 0;">
-                        <button onclick="generateCodes(5)" class="btn-submit" style="background:#22c55e;flex:1;padding:0.3rem;"><i class="fas fa-plus"></i> 5</button>
-                        <button onclick="generateCodes(10)" class="btn-submit" style="background:var(--primary);flex:1;padding:0.3rem;"><i class="fas fa-plus"></i> 10</button>
-                    </div>
-                    <div id="codesListContainer">
-                        <p style="color:var(--text-light);text-align:center;padding:0.5rem 0;font-size:.8rem;">اختر مدرساً لعرض الأكواد</p>
+                `
+            }
+
+            container.innerHTML = html
+            loading.classList.add('hidden')
+        }
+
+        function createSection(title, type, items) {
+            let cards = items.map(item => `
+                <div class="content-card" onclick="playContent('${item.id}')">
+                    <img src="${item.thumbnail_url || 'https://via.placeholder.com/300x200/1a1a1a/666?text=No+Image'}" 
+                         alt="${item.title}"
+                         onerror="this.src='https://via.placeholder.com/300x200/1a1a1a/666?text=No+Image'">
+                    <div class="card-info">
+                        <h4>${item.title}</h4>
+                        <span class="card-type">
+                            ${type === 'film' ? '🎬 فيلم' : type === 'series' ? '📺 مسلسل' : '🎨 كرتون'}
+                        </span>
                     </div>
                 </div>
-            </div>
+            `).join('')
 
-            <!-- ===== EDIT TEACHER ===== -->
-            <div class="tab-content" id="tab-edit-teacher">
-                <div class="edit-teacher-section">
-                    <h3 style="font-size:.9rem;margin-bottom:0.3rem;">✏️ تعديل مدرس</h3>
-                    <p style="color:var(--text-light);font-size:.75rem;margin-bottom:0.5rem;">اختر القسم ثم المدرس</p>
-                    <form id="editTeacherForm" class="admin-form">
-                        <div class="form-group">
-                            <label>📚 القسم *</label>
-                            <select id="editTeacherSection" required></select>
-                        </div>
-                        <div class="form-group">
-                            <label>👨‍🏫 المدرس *</label>
-                            <select id="editTeacherSelect" required>
-                                <option value="">اختر...</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>📝 الاسم *</label>
-                            <input type="text" id="editTeacherName" placeholder="اسم المدرس" required />
-                        </div>
-                        <div class="form-group">
-                            <label>📚 التخصص</label>
-                            <input type="text" id="editTeacherSubject" placeholder="مدرس رياضيات" />
-                        </div>
-                        <div class="form-group">
-                            <label>📄 الوصف</label>
-                            <textarea id="editTeacherDesc" rows="2" placeholder="وصف مختصر"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>🖼️ رابط الصورة</label>
-                            <input type="url" id="editTeacherImage" placeholder="https://..." />
-                        </div>
-                        <button type="submit" class="btn-submit" style="background:var(--primary-gradient);">
-                            <i class="fas fa-save"></i> حفظ
-                        </button>
-                        <div id="editTeacherMessage" style="text-align:center;font-weight:600;margin-top:0.3rem;font-size:.8rem;"></div>
-                    </form>
-                </div>
-            </div>
+            return `
+                <section class="content-section">
+                    <div class="section-header">
+                        <h2>${title}</h2>
+                        <a href="#" onclick="filterByType('${type}')">عرض الجميع <i class="fas fa-arrow-left"></i></a>
+                    </div>
+                    <div class="content-grid">${cards}</div>
+                </section>
+            `
+        }
 
-            <!-- ===== EDIT LECTURE ===== -->
-            <div class="tab-content" id="tab-edit-lecture">
-                <div class="edit-lecture-section">
-                    <h3 style="font-size:.9rem;margin-bottom:0.3rem;">✏️ تعديل محاضرة</h3>
-                    <p style="color:var(--text-light);font-size:.75rem;margin-bottom:0.5rem;">اختر القسم ثم المدرس ثم الفصل</p>
-                    <div class="form-group">
-                        <label>📚 القسم</label>
-                        <select id="editLectureSection" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>👨‍🏫 المدرس</label>
-                        <select id="editLectureTeacher" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>📀 الفصل</label>
-                        <select id="editLectureSemester" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>🎥 المحاضرة</label>
-                        <select id="editLectureSelect" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <button onclick="openEditLectureFromAdmin()" class="btn-submit" style="background:var(--primary);">
-                        <i class="fas fa-edit"></i> فتح التعديل
-                    </button>
-                    <div id="editLectureAdminMessage"></div>
-                </div>
-            </div>
+        // ============================================================
+        // دوال البحث والتصفية
+        // ============================================================
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase()
+            
+            if (!query) {
+                filteredContent = allContent
+            } else {
+                filteredContent = allContent.filter(item => 
+                    item.title.toLowerCase().includes(query) ||
+                    item.type.toLowerCase().includes(query)
+                )
+            }
+            
+            renderContent()
+        }
 
-            <!-- ===== DELETE ===== -->
-            <div class="tab-content" id="tab-delete">
-                <div class="delete-section">
-                    <h3>🗑️ حذف قسم</h3>
-                    <div class="form-group">
-                        <label>📚 القسم</label>
-                        <select id="deleteSection" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <button onclick="deleteSelectedSection()" class="btn-delete"><i class="fas fa-trash"></i> حذف</button>
-                    <div id="deleteSectionMessage"></div>
-                </div>
+        function filterByType(type) {
+            document.getElementById('searchInput').value = ''
+            filteredContent = allContent.filter(c => c.type === type)
+            renderContent()
+            
+            // التمرير إلى الأعلى
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
 
-                <hr style="margin:1rem 0;border-color:var(--border);">
+        function showAll(type) {
+            filterByType(type)
+        }
 
-                <div class="delete-section">
-                    <h3>🗑️ حذف مدرس</h3>
-                    <div class="form-group">
-                        <label>📚 القسم</label>
-                        <select id="deleteTeacherSection" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>👨‍🏫 المدرس</label>
-                        <select id="deleteTeacherSelect" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <button onclick="deleteSelectedTeacherFromTab()" class="btn-delete"><i class="fas fa-trash"></i> حذف</button>
-                    <div id="deleteTeacherMessage"></div>
-                </div>
+        // ============================================================
+        // دوال التنقل
+        // ============================================================
+        function navigateTo(page) {
+            // تحديث الروابط النشطة
+            document.querySelectorAll('.sidebar-nav a, .bottom-nav a').forEach(el => {
+                el.classList.remove('active')
+            })
+            
+            if (page === 'home') {
+                filteredContent = allContent
+                renderContent()
+                document.querySelector('.sidebar-nav a:first-child')?.classList.add('active')
+                document.querySelector('.bottom-nav a:first-child')?.classList.add('active')
+            }
+            
+            // إغلاق القائمة الجانبية في الجوال
+            closeSidebar()
+        }
 
-                <hr style="margin:1rem 0;border-color:var(--border);">
+        // ============================================================
+        // دوال تشغيل المحتوى
+        // ============================================================
+        function playContent(id) {
+            const item = allContent.find(c => c.id === id)
+            if (!item) return
 
-                <div class="delete-section">
-                    <h3>🗑️ حذف فصل</h3>
-                    <div class="form-group">
-                        <label>📚 القسم</label>
-                        <select id="deleteSemesterSection" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>👨‍🏫 المدرس</label>
-                        <select id="deleteSemesterTeacher" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>📀 الفصل</label>
-                        <select id="deleteSemesterSelect" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <button onclick="deleteSelectedSemesterFromTab()" class="btn-delete"><i class="fas fa-trash"></i> حذف</button>
-                    <div id="deleteSemesterMessage"></div>
-                </div>
+            // هنا يمكن فتح صفحة تشغيل الفيديو
+            alert(`🎬 تشغيل: ${item.title}\n\nنوع: ${item.type}\n\nهنا سيتم تشغيل الفيديو`)
+            
+            // في حالة وجود رابط فيديو
+            if (item.video_url) {
+                window.open(item.video_url, '_blank')
+            }
+        }
 
-                <hr style="margin:1rem 0;border-color:var(--border);">
+        // ============================================================
+        // دوال الإشعارات
+        // ============================================================
+        function toggleNotifications() {
+            const modal = document.getElementById('notifModal')
+            modal.classList.toggle('show')
+            
+            if (modal.classList.contains('show')) {
+                renderNotifications()
+            }
+        }
 
-                <div class="delete-section">
-                    <h3>🗑️ حذف محاضرة</h3>
-                    <div class="form-group">
-                        <label>📚 القسم</label>
-                        <select id="deleteLectureSection" required>
-                            <option value="">اختر...</option>
-                        </select>
+        function renderNotifications() {
+            const container = document.getElementById('notifList')
+            
+            if (notifications.length === 0) {
+                container.innerHTML = `
+                    <div class="notif-empty">
+                        <i class="fas fa-bell-slash"></i>
+                        <p>لا توجد إشعارات</p>
                     </div>
-                    <div class="form-group">
-                        <label>👨‍🏫 المدرس</label>
-                        <select id="deleteLectureTeacher" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>📀 الفصل</label>
-                        <select id="deleteLectureSemester" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>🎥 المحاضرة</label>
-                        <select id="deleteLectureSelect" required>
-                            <option value="">اختر...</option>
-                        </select>
-                    </div>
-                    <button onclick="deleteSelectedLectureFromTab()" class="btn-delete"><i class="fas fa-trash"></i> حذف</button>
-                    <div id="deleteLectureMessage"></div>
-                </div>
-            </div>
+                `
+                return
+            }
 
-            <!-- ===== USERS ===== -->
-            <div class="tab-content" id="tab-users">
-                <div class="users-management">
-                    <h3 style="font-size:.9rem;margin-bottom:0.3rem;">👥 المستخدمين</h3>
-                    <p style="color:var(--text-light);font-size:.75rem;margin-bottom:0.5rem;">المستخدمين المسجلين</p>
-                    <div class="users-table-wrapper">
-                        <table class="users-table" id="usersTable">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>البريد</th>
-                                    <th>الدورات</th>
-                                    <th>التسجيل</th>
-                                    <th>الصلاحية</th>
-                                </tr>
-                            </thead>
-                            <tbody id="usersTableBody">
-                                <tr>
-                                    <td colspan="5" style="text-align:center;color:var(--text-light);font-size:.8rem;">لا يوجد مستخدمين</td>
-                                </tr>
-                            </tbody>
-                        </table>
+            let html = notifications.map(n => `
+                <div class="notif-item ${n.is_read ? 'read' : ''}" onclick="markNotificationRead('${n.id}')">
+                    <div class="notif-icon">${n.type === 'new_content' ? '📢' : n.type === 'update' ? '✏️' : '🔔'}</div>
+                    <div class="notif-text">
+                        <p>${n.message}</p>
+                        <span>${new Date(n.created_at).toLocaleString('ar-EG')}</span>
                     </div>
                 </div>
-            </div>
+            `).join('')
 
-            <!-- ===== ADD ADMIN ===== -->
-            <div class="tab-content" id="tab-add-admin">
-                <div class="add-admin-section">
-                    <h3 style="font-size:.9rem;margin-bottom:0.3rem;">👑 إضافة مشرف</h3>
-                    <p style="color:var(--text-light);font-size:.75rem;margin-bottom:0.5rem;">أدخل البريد الإلكتروني</p>
-                    <div class="form-group">
-                        <label>📧 البريد</label>
-                        <input type="email" id="adminEmailInput" placeholder="example@gmail.com" />
-                    </div>
-                    <button onclick="addNewAdmin()" class="btn-submit" style="background:var(--primary-gradient);">
-                        <i class="fas fa-user-plus"></i> إضافة
-                    </button>
-                    <div id="addAdminMessage" style="text-align:center;font-weight:600;margin-top:0.3rem;font-size:.8rem;"></div>
+            container.innerHTML = html
+        }
 
-                    <hr style="margin:1rem 0;border-color:var(--border);">
+        async function markNotificationRead(id) {
+            try {
+                await supabaseClient
+                    .from('notifications')
+                    .update({ is_read: true })
+                    .eq('id', id)
+                
+                notifications = notifications.map(n => 
+                    n.id === id ? { ...n, is_read: true } : n
+                )
+                
+                updateNotificationBadge()
+                renderNotifications()
+            } catch (e) {
+                console.error('خطأ:', e)
+            }
+        }
 
-                    <h3 style="font-size:.9rem;margin-bottom:0.3rem;">👑 المشرفين الحاليين</h3>
-                    <div id="adminsListContainer">
-                        <p style="color:var(--text-light);text-align:center;padding:0.5rem 0;font-size:.8rem;">جاري التحميل...</p>
-                    </div>
-                </div>
-            </div>
+        // ============================================================
+        // دوال الملف الشخصي
+        // ============================================================
+        function toggleProfile() {
+            const modal = document.getElementById('profileModal')
+            modal.classList.toggle('show')
+        }
 
-            <!-- ===== TEACHER MANAGEMENT ===== -->
-            <div class="tab-content" id="tab-teacher-management">
-                <div class="teacher-management">
-                    <h3 style="font-size:.9rem;margin-bottom:0.3rem;">👨‍🏫 إدارة المدرسين</h3>
-                    <p style="color:var(--text-light);font-size:.75rem;margin-bottom:0.5rem;">جميع المدرسين المسجلين في المنصة</p>
-                    <div id="teachersManagementList">
-                        <p style="color:var(--text-light);text-align:center;font-size:0.8rem;">جاري التحميل...</p>
-                    </div>
-                </div>
-            </div>
+        // ============================================================
+        // دوال المودال
+        // ============================================================
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show')
+        }
 
-            <!-- ===== CONTACT MESSAGES ===== -->
-            <div class="tab-content" id="tab-contact-messages">
-                <div class="contact-messages-management">
-                    <h3 style="font-size:.9rem;margin-bottom:0.3rem;">✉️ رسائل التواصل</h3>
-                    <p style="color:var(--text-light);font-size:.75rem;margin-bottom:0.5rem;">جميع الرسائل المرسلة بين الطلاب والمدرسين</p>
-                    <div id="allMessagesContainer">
-                        <p style="color:var(--text-light);text-align:center;padding:0.5rem 0;font-size:.8rem;">لا توجد رسائل</p>
-                    </div>
-                </div>
-            </div>
+        // إغلاق المودال عند النقر خارجه
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('show')
+            }
+        })
 
-            <!-- ===== PUBLISH ===== -->
-            <div class="tab-content" id="tab-publish">
-                <div class="publish-section">
-                    <h3>📤 نشر التحديثات</h3>
-                    <p class="publish-info" style="color:var(--text-light);font-size:.8rem;">انشر جميع التغييرات</p>
-                    <div class="publish-stats">
-                        <span>📊 التغييرات: <span id="pendingChanges">0</span></span>
-                    </div>
-                    <button id="publishBtn" class="btn-publish"><i class="fas fa-upload"></i> نشر</button>
-                    <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap;">
-                        <button id="createTableBtn" class="btn-publish" style="background:#f59e0b;padding:0.4rem;font-size:.75rem;flex:1;">
-                            <i class="fas fa-database"></i> إنشاء جدول
-                        </button>
-                        <div id="publishMessage"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        // ============================================================
+        // دوال القائمة الجانبية
+        // ============================================================
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open')
+        }
 
-    <!-- ===== EDIT LECTURE MODAL ===== -->
-    <div class="modal-overlay" id="editLectureModal">
-        <div class="modal modal-small">
-            <button class="close-btn" id="closeEditLecture"><i class="fas fa-times"></i></button>
-            <h2>✏️ تعديل المحاضرة</h2>
-            <p style="text-align:center;color:var(--text-light);margin-bottom:0.5rem;font-size:.85rem;" id="editLectureInfo"></p>
-            <form id="editLectureForm" class="admin-form">
-                <div class="form-group">
-                    <label>📝 العنوان *</label>
-                    <input type="text" id="editLectureTitle" placeholder="عنوان المحاضرة" required />
-                </div>
-                <div class="form-group">
-                    <label>📹 رابط الفيديو *</label>
-                    <input type="url" id="editLectureUrl" placeholder="https://player.mediadelivery.net/play/..." required />
-                    <small style="color:var(--text-light);font-size:.65rem;display:block;margin-top:2px;">يدعم mediadelivery و YouTube</small>
-                </div>
-                <div class="form-group">
-                    <label>🔒 الحالة</label>
-                    <select id="editLectureIsFree">
-                        <option value="true">🆓 مجانية</option>
-                        <option value="false">🔒 مقفلة</option>
-                    </select>
-                </div>
-                <div id="editLectureMessage" style="text-align:center;font-weight:600;margin-bottom:0.3rem;font-size:.8rem;"></div>
-                <div class="form-actions" style="display:flex;gap:0.5rem;">
-                    <button type="submit" class="btn-save" style="flex:1;padding:0.5rem;background:var(--primary-gradient);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">
-                        <i class="fas fa-save"></i> حفظ
-                    </button>
-                    <button type="button" class="btn-cancel" id="cancelEditLecture" style="flex:1;padding:0.5rem;background:#ef4444;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">
-                        إلغاء
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open')
+        }
 
-    <script src="script.js"></script>
+        // ============================================================
+        // دوال الوضع الليلي
+        // ============================================================
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode')
+            const icon = document.getElementById('themeIcon')
+            icon.classList.toggle('fa-moon')
+            icon.classList.toggle('fa-sun')
+            
+            localStorage.setItem('devflix_theme', document.body.classList.contains('light-mode') ? 'light' : 'dark')
+        }
+
+        // ============================================================
+        // دوال تسجيل الخروج
+        // ============================================================
+        async function handleLogout() {
+            if (!confirm('هل أنت متأكد من رغبتك في تسجيل الخروج؟')) return
+
+            try {
+                await supabaseClient.auth.signOut()
+                localStorage.removeItem('devflix_session')
+                localStorage.removeItem('devflix_user')
+                window.location.href = 'index.html'
+            } catch (e) {
+                console.error('خطأ:', e)
+                alert('حدث خطأ أثناء تسجيل الخروج')
+            }
+        }
+
+        // ============================================================
+        // التهيئة
+        // ============================================================
+        async function init() {
+            // التحقق من الجلسة
+            const hasSession = await checkSession()
+            if (!hasSession) {
+                window.location.href = 'index.html'
+                return
+            }
+
+            // تحميل بيانات المستخدم
+            await loadUserData()
+            
+            // تحميل المحتوى
+            await loadContent()
+            
+            // تحميل الإشعارات
+            await loadNotifications()
+
+            // استعادة الوضع
+            const theme = localStorage.getItem('devflix_theme')
+            if (theme === 'light') {
+                document.body.classList.add('light-mode')
+                document.getElementById('themeIcon').classList.remove('fa-moon')
+                document.getElementById('themeIcon').classList.add('fa-sun')
+            }
+        }
+
+        // بدء التطبيق
+        document.addEventListener('DOMContentLoaded', init)
+    </script>
+
 </body>
 </html>
