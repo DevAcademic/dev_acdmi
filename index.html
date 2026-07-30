@@ -162,6 +162,7 @@
             color: #E50914;
             font-size: 13px;
             text-decoration: none;
+            cursor: pointer;
         }
 
         .forgot-link:hover {
@@ -207,47 +208,71 @@
             color: #E50914;
             text-decoration: none;
             font-weight: 600;
+            cursor: pointer;
         }
 
         .auth-link a:hover {
             text-decoration: underline;
         }
 
-        .error-message {
+        .message-box {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message-box.show {
+            display: flex;
+        }
+
+        .message-box.error {
+            background: rgba(229, 9, 20, 0.15);
+            border: 1px solid rgba(229, 9, 20, 0.3);
             color: #E50914;
-            font-size: 13px;
-            text-align: center;
-            margin-bottom: 15px;
-            padding: 8px;
-            background: rgba(229, 9, 20, 0.1);
-            border-radius: 8px;
-            border: 1px solid rgba(229, 9, 20, 0.2);
-            display: none;
         }
 
-        .error-message.show {
-            display: block;
-        }
-
-        .success-message {
+        .message-box.success {
+            background: rgba(76, 175, 80, 0.15);
+            border: 1px solid rgba(76, 175, 80, 0.3);
             color: #4CAF50;
-            font-size: 13px;
-            text-align: center;
-            margin-bottom: 15px;
-            padding: 8px;
-            background: rgba(76, 175, 80, 0.1);
-            border-radius: 8px;
-            border: 1px solid rgba(76, 175, 80, 0.2);
-            display: none;
         }
 
-        .success-message.show {
-            display: block;
+        .message-box.info {
+            background: rgba(33, 150, 243, 0.15);
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            color: #2196F3;
+        }
+
+        .message-box i {
+            font-size: 20px;
         }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         @media (max-width: 480px) {
@@ -280,15 +305,17 @@
                 <button class="tab-btn" onclick="switchTab('register')">إنشاء حساب</button>
             </div>
 
-            <!-- رسائل الخطأ والنجاح -->
-            <div id="errorMessage" class="error-message"></div>
-            <div id="successMessage" class="success-message"></div>
+            <!-- رسائل الحالة -->
+            <div id="messageBox" class="message-box">
+                <i id="messageIcon"></i>
+                <span id="messageText"></span>
+            </div>
 
             <!-- نموذج تسجيل الدخول -->
             <div id="loginForm" class="auth-form active">
                 <div class="input-group">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" class="auth-input">
+                    <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" class="auth-input" value="sajadsarmd200@gmail.com">
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
@@ -297,13 +324,14 @@
                 </div>
                 <div class="auth-options">
                     <label class="checkbox">
-                        <input type="checkbox" id="rememberMe"> تذكرني
+                        <input type="checkbox" id="rememberMe" checked> تذكرني
                     </label>
-                    <a href="#" class="forgot-link">نسيت كلمة المرور؟</a>
+                    <span class="forgot-link" onclick="showForgotPassword()">نسيت كلمة المرور؟</span>
                 </div>
                 <button onclick="handleLogin()" class="auth-btn" id="loginBtn">
                     <i class="fas fa-arrow-left"></i> دخول
                 </button>
+                <p class="auth-link">ليس لديك حساب؟ <a onclick="switchTab('register')">سجل الآن</a></p>
             </div>
 
             <!-- نموذج التسجيل -->
@@ -318,7 +346,8 @@
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="registerPassword" placeholder="كلمة المرور" class="auth-input">
+                    <input type="password" id="registerPassword" placeholder="كلمة المرور (6 أحرف على الأقل)" class="auth-input">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('registerPassword')"></i>
                 </div>
                 <div class="input-group">
                     <i class="fas fa-check-circle"></i>
@@ -327,7 +356,7 @@
                 <button onclick="handleRegister()" class="auth-btn" id="registerBtn">
                     <i class="fas fa-user-plus"></i> إنشاء حساب
                 </button>
-                <p class="auth-link">لديك حساب؟ <a href="#" onclick="switchTab('login')">سجل دخول</a></p>
+                <p class="auth-link">لديك حساب؟ <a onclick="switchTab('login')">سجل دخول</a></p>
             </div>
         </div>
     </div>
@@ -341,24 +370,45 @@
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey)
 
         // ============================================================
+        // دوال الرسائل
+        // ============================================================
+        function showMessage(message, type = 'error') {
+            const box = document.getElementById('messageBox')
+            const icon = document.getElementById('messageIcon')
+            const text = document.getElementById('messageText')
+            
+            box.className = 'message-box show ' + type
+            box.classList.add('shake')
+            
+            const icons = {
+                error: 'fa-exclamation-circle',
+                success: 'fa-check-circle',
+                info: 'fa-info-circle'
+            }
+            
+            icon.className = 'fas ' + (icons[type] || icons.error)
+            text.textContent = message
+            
+            setTimeout(() => {
+                box.classList.remove('shake')
+            }, 500)
+            
+            clearTimeout(window.messageTimeout)
+            window.messageTimeout = setTimeout(() => {
+                box.classList.remove('show')
+            }, 6000)
+        }
+
+        function hideMessage() {
+            document.getElementById('messageBox').classList.remove('show')
+        }
+
+        // ============================================================
         // دوال مساعدة
         // ============================================================
-        function showError(message) {
-            const el = document.getElementById('errorMessage')
-            el.textContent = message
-            el.classList.add('show')
-            setTimeout(() => el.classList.remove('show'), 5000)
-        }
-
-        function showSuccess(message) {
-            const el = document.getElementById('successMessage')
-            el.textContent = message
-            el.classList.add('show')
-            setTimeout(() => el.classList.remove('show'), 5000)
-        }
-
         function togglePassword(id) {
             const input = document.getElementById(id)
+            if (!input) return
             const icon = input.nextElementSibling
             if (input.type === 'password') {
                 input.type = 'text'
@@ -372,15 +422,13 @@
         }
 
         function switchTab(tab) {
+            hideMessage()
+            
             const tabs = document.querySelectorAll('.tab-btn')
             const forms = document.querySelectorAll('.auth-form')
             
             tabs.forEach(t => t.classList.remove('active'))
             forms.forEach(f => f.classList.remove('active'))
-            
-            // إخفاء الرسائل
-            document.getElementById('errorMessage').classList.remove('show')
-            document.getElementById('successMessage').classList.remove('show')
             
             if (tab === 'login') {
                 tabs[0].classList.add('active')
@@ -391,7 +439,199 @@
             }
         }
 
-        // Enter key support
+        function showForgotPassword() {
+            showMessage('📧 سيتم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني', 'info')
+        }
+
+        // ============================================================
+        // وظيفة تسجيل الدخول
+        // ============================================================
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim()
+            const password = document.getElementById('loginPassword').value
+            const btn = document.getElementById('loginBtn')
+            const remember = document.getElementById('rememberMe').checked
+
+            hideMessage()
+
+            if (!email || !password) {
+                showMessage('⚠️ يرجى إدخال البريد الإلكتروني وكلمة المرور', 'error')
+                return
+            }
+
+            btn.disabled = true
+            btn.innerHTML = '<i class="fas fa-spinner spinner"></i> جاري الدخول...'
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                })
+
+                if (error) {
+                    if (error.message.includes('Invalid login credentials')) {
+                        showMessage('❌ البريد الإلكتروني أو كلمة المرور غير صحيحة', 'error')
+                    } else if (error.message.includes('Email not confirmed')) {
+                        showMessage('⚠️ يرجى تأكيد البريد الإلكتروني أولاً', 'error')
+                    } else {
+                        showMessage('❌ ' + error.message, 'error')
+                    }
+                    btn.disabled = false
+                    btn.innerHTML = '<i class="fas fa-arrow-left"></i> دخول'
+                    return
+                }
+
+                if (remember) {
+                    localStorage.setItem('devflix_session', JSON.stringify(data.session))
+                }
+
+                localStorage.setItem('devflix_user', JSON.stringify(data.user))
+
+                showMessage('✅ تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success')
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html'
+                }, 800)
+
+            } catch (error) {
+                showMessage('❌ حدث خطأ غير متوقع', 'error')
+                btn.disabled = false
+                btn.innerHTML = '<i class="fas fa-arrow-left"></i> دخول'
+            }
+        }
+
+        // ============================================================
+        // وظيفة التسجيل المحسنة
+        // ============================================================
+        async function handleRegister() {
+            const name = document.getElementById('registerName').value.trim()
+            const email = document.getElementById('registerEmail').value.trim()
+            const password = document.getElementById('registerPassword').value
+            const confirm = document.getElementById('registerConfirm').value
+            const btn = document.getElementById('registerBtn')
+
+            hideMessage()
+
+            // التحقق من الحقول
+            if (!name || !email || !password || !confirm) {
+                showMessage('⚠️ يرجى ملء جميع الحقول', 'error')
+                return
+            }
+
+            if (name.length < 2) {
+                showMessage('⚠️ الاسم يجب أن يكون حرفين على الأقل', 'error')
+                return
+            }
+
+            if (!email.includes('@') || !email.includes('.')) {
+                showMessage('⚠️ يرجى إدخال بريد إلكتروني صحيح', 'error')
+                return
+            }
+
+            if (password.length < 6) {
+                showMessage('⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error')
+                return
+            }
+
+            if (password !== confirm) {
+                showMessage('⚠️ كلمة المرور غير متطابقة', 'error')
+                return
+            }
+
+            btn.disabled = true
+            btn.innerHTML = '<i class="fas fa-spinner spinner"></i> جاري التسجيل...'
+
+            try {
+                // أولاً: التحقق من وجود البريد في جدول users
+                const { data: existingUser, error: checkError } = await supabaseClient
+                    .from('users')
+                    .select('email')
+                    .eq('email', email)
+                    .maybeSingle()
+
+                if (existingUser) {
+                    showMessage('⚠️ هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول', 'error')
+                    btn.disabled = false
+                    btn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب'
+                    setTimeout(() => {
+                        switchTab('login')
+                        document.getElementById('loginEmail').value = email
+                    }, 1500)
+                    return
+                }
+
+                // محاولة التسجيل في Supabase Auth
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: name,
+                            role: 'user'
+                        }
+                    }
+                })
+
+                if (error) {
+                    if (error.message.includes('User already registered')) {
+                        showMessage('⚠️ هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول', 'error')
+                        setTimeout(() => {
+                            switchTab('login')
+                            document.getElementById('loginEmail').value = email
+                        }, 1500)
+                    } else {
+                        showMessage('❌ ' + error.message, 'error')
+                    }
+                    btn.disabled = false
+                    btn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب'
+                    return
+                }
+
+                // إذا نجح التسجيل، إضافة المستخدم إلى جدول users
+                if (data.user) {
+                    const { error: insertError } = await supabaseClient
+                        .from('users')
+                        .insert({
+                            id: data.user.id,
+                            email: email,
+                            full_name: name,
+                            role: 'user'
+                        })
+
+                    if (insertError) {
+                        console.error('خطأ في إضافة المستخدم:', insertError)
+                    }
+                }
+
+                showMessage('✅ تم التسجيل بنجاح! يمكنك الدخول الآن', 'success')
+
+                // تفريغ الحقول
+                document.getElementById('registerName').value = ''
+                document.getElementById('registerEmail').value = ''
+                document.getElementById('registerPassword').value = ''
+                document.getElementById('registerConfirm').value = ''
+
+                // التبديل إلى تسجيل الدخول مع تعبئة البريد
+                setTimeout(() => {
+                    switchTab('login')
+                    document.getElementById('loginEmail').value = email
+                    showMessage('✅ تم التسجيل بنجاح! أدخل كلمة المرور للدخول', 'success')
+                }, 1000)
+
+                btn.disabled = false
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب'
+
+            } catch (error) {
+                console.error('خطأ:', error)
+                showMessage('❌ حدث خطأ غير متوقع: ' + error.message, 'error')
+                btn.disabled = false
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب'
+            }
+        }
+
+        // ============================================================
+        // دعم Enter key
+        // ============================================================
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 const loginForm = document.getElementById('loginForm')
@@ -405,140 +645,20 @@
         })
 
         // ============================================================
-        // وظيفة تسجيل الدخول
-        // ============================================================
-        async function handleLogin() {
-            const email = document.getElementById('loginEmail').value.trim()
-            const password = document.getElementById('loginPassword').value
-            const btn = document.getElementById('loginBtn')
-            const remember = document.getElementById('rememberMe').checked
-
-            if (!email || !password) {
-                showError('⚠️ يرجى إدخال البريد الإلكتروني وكلمة المرور')
-                return
-            }
-
-            btn.disabled = true
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الدخول...'
-
-            try {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                })
-
-                if (error) {
-                    showError('❌ ' + error.message)
-                    btn.disabled = false
-                    btn.innerHTML = '<i class="fas fa-arrow-left"></i> دخول'
-                    return
-                }
-
-                // حفظ الجلسة
-                if (remember) {
-                    localStorage.setItem('devflix_session', JSON.stringify(data.session))
-                }
-
-                // حفظ معلومات المستخدم
-                localStorage.setItem('devflix_user', JSON.stringify(data.user))
-
-                showSuccess('✅ تم تسجيل الدخول بنجاح!')
-
-                // الانتقال إلى لوحة التحكم
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html'
-                }, 800)
-
-            } catch (error) {
-                showError('❌ حدث خطأ غير متوقع')
-                btn.disabled = false
-                btn.innerHTML = '<i class="fas fa-arrow-left"></i> دخول'
-            }
-        }
-
-        // ============================================================
-        // وظيفة التسجيل
-        // ============================================================
-        async function handleRegister() {
-            const name = document.getElementById('registerName').value.trim()
-            const email = document.getElementById('registerEmail').value.trim()
-            const password = document.getElementById('registerPassword').value
-            const confirm = document.getElementById('registerConfirm').value
-            const btn = document.getElementById('registerBtn')
-
-            if (!name || !email || !password || !confirm) {
-                showError('⚠️ يرجى ملء جميع الحقول')
-                return
-            }
-
-            if (password.length < 6) {
-                showError('⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل')
-                return
-            }
-
-            if (password !== confirm) {
-                showError('⚠️ كلمة المرور غير متطابقة')
-                return
-            }
-
-            btn.disabled = true
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التسجيل...'
-
-            try {
-                const { data, error } = await supabaseClient.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: {
-                        data: {
-                            full_name: name,
-                            role: 'user'
-                        }
-                    }
-                })
-
-                if (error) {
-                    showError('❌ ' + error.message)
-                    btn.disabled = false
-                    btn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب'
-                    return
-                }
-
-                showSuccess('✅ تم التسجيل بنجاح! يمكنك الدخول الآن')
-
-                // تفريغ الحقول
-                document.getElementById('registerName').value = ''
-                document.getElementById('registerEmail').value = ''
-                document.getElementById('registerPassword').value = ''
-                document.getElementById('registerConfirm').value = ''
-
-                // التبديل إلى تسجيل الدخول
-                setTimeout(() => {
-                    switchTab('login')
-                    document.getElementById('loginEmail').value = email
-                }, 1000)
-
-                btn.disabled = false
-                btn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب'
-
-            } catch (error) {
-                showError('❌ حدث خطأ غير متوقع')
-                btn.disabled = false
-                btn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب'
-            }
-        }
-
-        // ============================================================
         // التحقق من الجلسة عند التحميل
         // ============================================================
         document.addEventListener('DOMContentLoaded', async () => {
+            // تعبئة البريد الإلكتروني للمدمن
+            document.getElementById('loginEmail').value = 'sajadsarmd200@gmail.com'
+            
             // التحقق من وجود جلسة مخزنة
             const session = localStorage.getItem('devflix_session')
             if (session) {
                 try {
                     const { data, error } = await supabaseClient.auth.setSession(JSON.parse(session))
                     if (!error && data.user) {
-                        // إذا كانت الجلسة صالحة، الانتقال إلى لوحة التحكم
                         window.location.href = 'dashboard.html'
+                        return
                     }
                 } catch (e) {
                     console.log('جلسة منتهية')
@@ -546,9 +666,13 @@
             }
 
             // التحقق من جلسة Supabase الحالية
-            const { data: { user } } = await supabaseClient.auth.getUser()
-            if (user) {
-                window.location.href = 'dashboard.html'
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser()
+                if (user) {
+                    window.location.href = 'dashboard.html'
+                }
+            } catch (e) {
+                console.log('لا توجد جلسة نشطة')
             }
         })
     </script>
