@@ -2,679 +2,1748 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevFlix - تسجيل الدخول</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>ديفا كارتون</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
+        /* جميع الأنماط كما هي دون تغيير */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        :root {
+            --bg: #f0f2f7;
+            --bg-card: #ffffff;
+            --bg-header: #ffffff;
+            --text: #1a2332;
+            --text-secondary: #6a7a8a;
+            --primary: #2d7fc1;
+            --primary-dark: #1a5a8a;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #27ae60;
+            --shadow: 0 4px 15px rgba(45, 127, 193, 0.10);
+            --radius: 14px;
+            --bottom-nav: #ffffff;
+            --border: #e0e5ec;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f1724;
+            --bg-card: #1a2639;
+            --bg-header: #0f1724;
+            --text: #e8edf2;
+            --text-secondary: #8899aa;
+            --shadow: 0 4px 15px rgba(0,0,0,0.4);
+            --bottom-nav: #1a2639;
+            --border: #2a3a4a;
         }
 
         body {
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            background: #0a0a0a;
+            padding-bottom: 70px;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-header);
+            padding: 10px 16px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 20px;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+            border-bottom: 3px solid var(--primary);
         }
 
-        .auth-container {
-            width: 100%;
-            max-width: 420px;
-        }
-
-        .auth-card {
-            background: #1a1a1a;
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
-            border: 1px solid #2a2a2a;
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo-icon {
-            font-size: 56px;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .auth-header h1 {
-            font-size: 36px;
-            color: #E50914;
+        .header h1 {
+            font-size: 1.3rem;
             font-weight: 800;
-            letter-spacing: -1px;
+            color: var(--primary);
+            cursor: pointer;
+            user-select: none;
+            padding: 4px 8px;
+            border-radius: 6px;
         }
 
-        .auth-header p {
-            color: #888;
-            font-size: 14px;
-            margin-top: 4px;
-        }
-
-        .auth-tabs {
+        .header-actions {
             display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            background: #0a0a0a;
-            border-radius: 12px;
-            padding: 4px;
+            gap: 6px;
+            align-items: center;
         }
 
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
+        .header-actions button {
+            background: var(--bg);
             border: none;
-            border-radius: 8px;
+            font-size: 1.1rem;
+            color: var(--text);
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 12px 14px 20px;
+        }
+
+        .search-bar {
+            background: var(--bg-card);
+            border-radius: 50px;
+            padding: 4px 14px 4px 4px;
+            display: flex;
+            align-items: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 14px;
+            border: 1px solid var(--border);
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px 14px;
+            border: none;
             background: transparent;
-            color: #888;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tab-btn.active {
-            background: #E50914;
-            color: white;
-        }
-
-        .auth-form {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .auth-form.active {
-            display: block;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .input-group i {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #555;
-        }
-
-        .input-group .toggle-password {
-            right: auto;
-            left: 15px;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        .auth-input {
-            width: 100%;
-            padding: 14px 45px 14px 15px;
-            background: #0a0a0a;
-            border: 2px solid #2a2a2a;
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .auth-input:focus {
-            border-color: #E50914;
+            color: var(--text);
+            font-size: 0.9rem;
             outline: none;
         }
 
-        .auth-input::placeholder {
-            color: #555;
+        .search-bar input::placeholder {
+            color: var(--text-secondary);
         }
 
-        .auth-options {
+        .search-bar button {
+            background: var(--primary);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 12px 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+        }
+
+        .section-title i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .card-list {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 4px 0 12px;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .card-list::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .card-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .card-item {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid var(--border);
+            min-width: 140px;
+            max-width: 160px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(45, 127, 193, 0.15);
+        }
+
+        .card-item .thumb {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(145deg, #1a3a5a, #0f2030);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .card-item .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-item .thumb .play-icon {
+            position: absolute;
+            font-size: 2.5rem;
+            opacity: 0.6;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+
+        .card-item .info {
+            padding: 6px 10px 8px;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 44px;
+        }
+
+        .card-item .info h4 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--text);
+        }
+
+        .card-item .info .type-badge {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            margin-top: 2px;
+            width: fit-content;
+        }
+
+        .type-badge.anime {
+            background: #8e44ad;
+            color: white;
+        }
+
+        .type-badge.cartoon {
+            background: var(--primary);
+            color: white;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bottom-nav);
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 0 10px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+            border-top: 1px solid var(--border);
+            z-index: 200;
+        }
+
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+            padding: 4px 12px;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            font-size: 0.6rem;
+            transition: 0.2s;
+            border-radius: 10px;
+        }
+
+        .bottom-nav .nav-item i {
+            font-size: 1.3rem;
+        }
+
+        .bottom-nav .nav-item.active {
+            color: var(--primary);
+        }
+
+        #adminPanel {
+            display: none;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin: 12px 0;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--primary);
+        }
+
+        #adminPanel.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 15px 0 20px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
         }
 
-        .checkbox {
-            color: #888;
-            font-size: 13px;
-            cursor: pointer;
+        .panel-header h3 {
+            font-size: 1.1rem;
+            color: var(--primary);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .checkbox input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: #E50914;
-        }
-
-        .forgot-link {
-            color: #E50914;
-            font-size: 13px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .forgot-link:hover {
-            text-decoration: underline;
-        }
-
-        .auth-btn {
-            width: 100%;
-            padding: 14px;
-            background: #E50914;
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .admin-tabs {
             display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .admin-tabs button {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 10px;
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.75rem;
+            border: 1px solid var(--border);
+        }
+
+        .admin-tabs button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .admin-section {
+            margin-bottom: 14px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .admin-section h4 {
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .admin-section h4 i {
+            color: var(--primary);
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: var(--text);
+            outline: none;
+        }
+
+        .admin-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45, 127, 193, 0.1);
+        }
+
+        .admin-select {
+            width: 100%;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: var(--text);
+            outline: none;
+        }
+
+        .admin-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.25s;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 6px;
+            min-width: 80px;
         }
 
-        .auth-btn:hover {
-            background: #f6121e;
+        .admin-btn:hover {
             transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
-        .auth-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
+        .admin-btn-primary {
+            background: var(--primary);
+            color: white;
         }
 
-        .auth-link {
+        .admin-btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .admin-btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .admin-btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .admin-btn-sm {
+            padding: 6px 12px;
+            font-size: 0.7rem;
+            min-width: auto;
+        }
+
+        .admin-btn-block {
+            width: 100%;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .empty-state {
             text-align: center;
-            margin-top: 20px;
-            color: #888;
-            font-size: 14px;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            min-width: 200px;
         }
 
-        .auth-link a {
-            color: #E50914;
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
+        .empty-state i {
+            font-size: 3rem;
+            opacity: 0.3;
+            margin-bottom: 10px;
         }
 
-        .auth-link a:hover {
-            text-decoration: underline;
-        }
-
-        .message-box {
-            padding: 12px 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            font-size: 14px;
+        #loginOverlay {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            z-index: 999;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
         }
 
-        .message-box.show {
+        #loginOverlay.active {
             display: flex;
         }
 
-        .message-box.error {
-            background: rgba(229, 9, 20, 0.15);
-            border: 1px solid rgba(229, 9, 20, 0.3);
-            color: #E50914;
+        .login-box {
+            background: var(--bg-card);
+            padding: 28px 24px;
+            border-radius: 28px;
+            width: 90%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.3);
+            border: 2px solid var(--primary);
         }
 
-        .message-box.success {
-            background: rgba(76, 175, 80, 0.15);
-            border: 1px solid rgba(76, 175, 80, 0.3);
-            color: #4CAF50;
+        .login-box h2 {
+            color: var(--primary);
+            margin-bottom: 4px;
         }
 
-        .message-box.info {
-            background: rgba(33, 150, 243, 0.15);
-            border: 1px solid rgba(33, 150, 243, 0.3);
-            color: #2196F3;
+        .login-box p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 18px;
         }
 
-        .message-box i {
-            font-size: 20px;
+        .login-box input {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--text);
+            outline: none;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .login-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45, 127, 193, 0.1);
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+        .close-login {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
         }
 
-        .shake {
-            animation: shake 0.5s ease;
+        #playerModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
 
-        .spinner {
-            animation: spin 1s linear infinite;
+        #playerModal.active {
+            display: flex;
         }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .player-box {
+            width: 95%;
+            max-width: 540px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
         }
 
-        @media (max-width: 480px) {
-            .auth-card {
-                padding: 25px;
+        .player-box .p-header {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .player-box .p-header h4 {
+            font-size: 0.9rem;
+            max-width: 80%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .player-box .p-header button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .player-box .p-video {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: #000;
+        }
+
+        .player-box .p-video iframe,
+        .player-box .p-video video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            padding: 10px 22px;
+            border-radius: 50px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            border-right: 4px solid var(--primary);
+            z-index: 9999;
+            display: none;
+            color: var(--text);
+            font-weight: 500;
+            max-width: 90%;
+            text-align: center;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .toast.show {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            0% { opacity: 0; transform: translateX(-50%) translateY(15px); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 900;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 24px;
+            width: 92%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 2px solid var(--primary);
+        }
+
+        .modal-box h3 {
+            margin-bottom: 16px;
+            color: var(--primary);
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .season-horizontal {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 8px 0 16px;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .season-horizontal::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .season-horizontal::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .season-card {
+            min-width: 100px;
+            max-width: 120px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .season-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .season-card.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .season-card .season-num {
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        .season-card .season-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+        }
+
+        .season-card.active .season-label {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .episode-list {
+            margin-top: 8px;
+        }
+
+        .episode-item-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--bg);
+            border-radius: 12px;
+            margin-bottom: 6px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .episode-item-display:hover {
+            background: var(--bg-card);
+            box-shadow: var(--shadow);
+        }
+
+        .episode-item-display .ep-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .episode-item-display .ep-info .ep-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .episode-item-display .ep-info .ep-duration {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .episode-item-display .ep-play {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: 0.2s;
+        }
+
+        .episode-item-display .ep-play:hover {
+            background: var(--primary-dark);
+        }
+
+        .manage-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--bg);
+            border-radius: 10px;
+            margin-bottom: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .manage-item .info .title {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .manage-item .info .sub {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+        }
+
+        .manage-item .actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .manage-item .actions button {
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .season-item,
+        .episode-item {
+            background: var(--bg);
+            padding: 10px 12px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .season-item .s-title,
+        .episode-item .e-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .season-item .s-actions,
+        .episode-item .e-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .season-item .s-actions button,
+        .episode-item .e-actions button {
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .episode-item .e-actions .play-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .publish-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .publish-status .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .publish-status .dot.published {
+            background: var(--success);
+        }
+
+        .publish-status .dot.draft {
+            background: var(--warning);
+        }
+
+        @media (max-width: 400px) {
+            .card-item {
+                min-width: 120px;
+                max-width: 140px;
             }
-            
-            .auth-header h1 {
-                font-size: 28px;
+            .card-item .thumb {
+                height: 120px;
             }
-            
-            .auth-input {
-                padding: 12px 40px 12px 12px;
-                font-size: 14px;
+            .card-item .info {
+                min-height: 38px;
+                padding: 4px 8px 6px;
+            }
+            .card-item .info h4 {
+                font-size: 0.65rem;
+            }
+            .season-card {
+                min-width: 80px;
+                padding: 8px 6px;
+            }
+            .season-card .season-num {
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <span class="logo-icon">🎬</span>
-                <h1>DevFlix</h1>
-                <p>منصة المشاهدة الذكية</p>
-            </div>
-            
-            <div class="auth-tabs">
-                <button class="tab-btn active" onclick="switchTab('login')">تسجيل الدخول</button>
-                <button class="tab-btn" onclick="switchTab('register')">إنشاء حساب</button>
-            </div>
 
-            <!-- رسائل الحالة -->
-            <div id="messageBox" class="message-box">
-                <i id="messageIcon"></i>
-                <span id="messageText"></span>
-            </div>
+    <div id="toast" class="toast"></div>
 
-            <!-- نموذج تسجيل الدخول -->
-            <div id="loginForm" class="auth-form active">
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" class="auth-input" value="sajadsarmd200@gmail.com">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="loginPassword" placeholder="كلمة المرور" class="auth-input">
-                    <i class="fas fa-eye toggle-password" onclick="togglePassword('loginPassword')"></i>
-                </div>
-                <div class="auth-options">
-                    <label class="checkbox">
-                        <input type="checkbox" id="rememberMe" checked> تذكرني
-                    </label>
-                    <span class="forgot-link" onclick="showForgotPassword()">نسيت كلمة المرور؟</span>
-                </div>
-                <button onclick="handleLogin()" class="auth-btn" id="loginBtn">
-                    <i class="fas fa-arrow-left"></i> دخول
-                </button>
-                <p class="auth-link">ليس لديك حساب؟ <a onclick="switchTab('register')">سجل الآن</a></p>
-            </div>
+    <div class="header">
+        <div style="display:flex; align-items:center; gap:6px;">
+            <i class="fas fa-film" style="color:var(--primary); font-size:1.5rem;"></i>
+            <h1 id="appTitle">ديف كرتون</h1>
+        </div>
+        <div class="header-actions">
+            <button id="themeToggle"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
 
-            <!-- نموذج التسجيل -->
-            <div id="registerForm" class="auth-form">
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="registerName" placeholder="الاسم الكامل" class="auth-input">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="registerEmail" placeholder="البريد الإلكتروني" class="auth-input">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="registerPassword" placeholder="كلمة المرور (6 أحرف على الأقل)" class="auth-input">
-                    <i class="fas fa-eye toggle-password" onclick="togglePassword('registerPassword')"></i>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-check-circle"></i>
-                    <input type="password" id="registerConfirm" placeholder="تأكيد كلمة المرور" class="auth-input">
-                </div>
-                <button onclick="handleRegister()" class="auth-btn" id="registerBtn">
-                    <i class="fas fa-user-plus"></i> إنشاء حساب
-                </button>
-                <p class="auth-link">لديك حساب؟ <a onclick="switchTab('login')">سجل دخول</a></p>
+    <div class="container" id="mainContainer">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="ابحث عن عمل...">
+            <button id="searchBtn"><i class="fas fa-search"></i></button>
+        </div>
+
+        <div id="animeSection">
+            <div class="section-title"><i class="fas fa-tv"></i> الأنمي <span id="animeCount" style="font-size:0.7rem;color:var(--text-secondary);"></span></div>
+            <div class="card-list" id="animeGrid"></div>
+        </div>
+
+        <div id="cartoonSection">
+            <div class="section-title"><i class="fas fa-crown"></i> كرتون <span id="cartoonCount" style="font-size:0.7rem;color:var(--text-secondary);"></span></div>
+            <div class="card-list" id="cartoonGrid"></div>
+        </div>
+    </div>
+
+    <div class="container" id="adminPanel">
+        <div class="panel-header">
+            <h3><i class="fas fa-cog"></i> لوحة الإدارة</h3>
+            <button class="admin-btn admin-btn-danger admin-btn-sm" id="closeAdmin"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="admin-tabs">
+            <button class="active" data-tab="add">إضافة</button>
+            <button data-tab="manage">إدارة</button>
+            <button data-tab="settings">إعدادات</button>
+        </div>
+
+        <div class="admin-section" id="tabAdd">
+            <h4><i class="fas fa-plus-circle"></i> إضافة محتوى جديد</h4>
+            <input class="admin-input" id="newTitle" placeholder="اسم العمل" />
+            <input class="admin-input" id="newImage" placeholder="رابط الصورة (غلاف العمل)" />
+            <select class="admin-select" id="newType">
+                <option value="anime">أنمي</option>
+                <option value="cartoon">كرتون</option>
+            </select>
+            <button class="admin-btn admin-btn-primary admin-btn-block" id="addContentBtn"><i class="fas fa-save"></i> إضافة</button>
+        </div>
+
+        <div class="admin-section hidden" id="tabManage">
+            <h4><i class="fas fa-list"></i> قائمة المحتوى</h4>
+            <div id="manageList"></div>
+        </div>
+
+        <div class="admin-section hidden" id="tabSettings">
+            <h4><i class="fas fa-palette"></i> المظهر</h4>
+            <button class="admin-btn admin-btn-outline admin-btn-block" id="toggleThemeBtn"><i class="fas fa-moon"></i> تبديل الوضع الليلي</button>
+            <hr style="margin:12px 0;border-color:var(--border);">
+            <h4><i class="fas fa-rocket"></i> النشر</h4>
+            <button class="admin-btn admin-btn-success admin-btn-block" id="publishBtn"><i class="fas fa-globe"></i> نشر التحديثات</button>
+            <div class="publish-status" id="publishStatus">
+                <span class="dot draft" id="statusDot"></span>
+                <span id="statusText">لم يتم النشر بعد</span>
+            </div>
+            <hr style="margin:12px 0;border-color:var(--border);">
+            <h4><i class="fas fa-database"></i> البيانات</h4>
+            <button class="admin-btn admin-btn-danger admin-btn-block" id="resetDataBtn"><i class="fas fa-trash"></i> إعادة تعيين البيانات</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item active" data-section="home"><i class="fas fa-home"></i> الرئيسية</button>
+        <button class="nav-item" data-section="anime"><i class="fas fa-tv"></i> الأنمي</button>
+        <button class="nav-item" data-section="cartoon"><i class="fas fa-crown"></i> كرتون</button>
+    </div>
+
+    <div id="loginOverlay">
+        <div class="login-box">
+            <h2><i class="fas fa-lock"></i> تسجيل الدخول</h2>
+            <p>أدخل بيانات الدخول</p>
+            <input type="email" id="loginEmail" placeholder="البريد الإلكتروني">
+            <input type="password" id="loginPassword" placeholder="كلمة المرور">
+            <button class="admin-btn admin-btn-primary admin-btn-block" id="loginBtn"><i class="fas fa-sign-in-alt"></i> دخول</button>
+            <button class="close-login" id="closeLogin">إلغاء</button>
+        </div>
+    </div>
+
+    <div id="playerModal">
+        <div class="player-box">
+            <div class="p-header">
+                <h4 id="playerTitle">عنوان الفيديو</h4>
+                <button id="closePlayer"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-video">
+                <iframe id="playerFrame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
         </div>
     </div>
 
+    <div class="modal-overlay" id="contentModal">
+        <div class="modal-box">
+            <h3 id="modalTitle">المحتوى</h3>
+            <div id="modalBody"></div>
+            <button class="admin-btn admin-btn-danger admin-btn-block" id="closeModalBtn" style="margin-top:12px;"><i class="fas fa-times"></i> إغلاق</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="adminContentModal">
+        <div class="modal-box">
+            <h3 id="adminModalTitle">إدارة المحتوى</h3>
+            <div id="adminModalBody"></div>
+            <button class="admin-btn admin-btn-danger admin-btn-block" id="closeAdminModalBtn" style="margin-top:12px;"><i class="fas fa-times"></i> إغلاق</button>
+        </div>
+    </div>
+
     <script>
-        // ============================================================
-        // إعداد Supabase
-        // ============================================================
-        const supabaseUrl = 'https://hdtrnfpwyvaeziaiweck.supabase.co'
-        const supabaseKey = 'sb_publishable_XYiUfizde8-Z0yBjvZNsBw_q_LSXK7V'
-        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey)
-
-        // ============================================================
-        // دوال الرسائل
-        // ============================================================
-        function showMessage(message, type = 'error') {
-            const box = document.getElementById('messageBox')
-            const icon = document.getElementById('messageIcon')
-            const text = document.getElementById('messageText')
-            
-            box.className = 'message-box show ' + type
-            box.classList.add('shake')
-            
-            const icons = {
-                error: 'fa-exclamation-circle',
-                success: 'fa-check-circle',
-                info: 'fa-info-circle'
+        // =============================================
+        // 🔒 منع اختصارات F12 وأدوات المطور
+        // =============================================
+        document.addEventListener('keydown', function(e) {
+            // منع F12
+            if (e.key === 'F12') {
+                e.preventDefault();
+                return false;
             }
-            
-            icon.className = 'fas ' + (icons[type] || icons.error)
-            text.textContent = message
-            
-            setTimeout(() => {
-                box.classList.remove('shake')
-            }, 500)
-            
-            clearTimeout(window.messageTimeout)
-            window.messageTimeout = setTimeout(() => {
-                box.classList.remove('show')
-            }, 6000)
+
+            // منع Ctrl+Shift+I (أدوات المطور)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
+                e.preventDefault();
+                return false;
+            }
+
+            // منع Ctrl+Shift+J (وحدة التحكم)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
+                e.preventDefault();
+                return false;
+            }
+
+            // منع Ctrl+U (عرض المصدر)
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+
+            // منع Ctrl+Shift+C (عناصر الفحص)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // منع النقر بالزر الأيمن (قائمة السياق)
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // =============================================
+        // بيانات الدخول مشفرة بشكل آمن
+        // =============================================
+        const ENCODED_CREDENTIALS = (function() {
+            const raw = JSON.stringify({
+                email: 'admin@difa.com',
+                password: 'admin123'
+            });
+            const base64 = btoa(raw);
+            const reversed = base64.split('').reverse().join('');
+            return reversed;
+        })();
+
+        function getCredentials() {
+            try {
+                const reversed = ENCODED_CREDENTIALS.split('').reverse().join('');
+                const decoded = atob(reversed);
+                return JSON.parse(decoded);
+            } catch (e) {
+                return { email: 'admin@difa.com', password: 'admin123' };
+            }
         }
 
-        function hideMessage() {
-            document.getElementById('messageBox').classList.remove('show')
-        }
+        const CREDS = getCredentials();
+        let loginAttempts = 0;
 
-        // ============================================================
-        // دوال مساعدة
-        // ============================================================
-        function togglePassword(id) {
-            const input = document.getElementById(id)
-            if (!input) return
-            const icon = input.nextElementSibling
-            if (input.type === 'password') {
-                input.type = 'text'
-                icon.classList.remove('fa-eye')
-                icon.classList.add('fa-eye-slash')
+        // =============================================
+        // STATE
+        // =============================================
+        let contents = [];
+        let isDark = localStorage.getItem('theme') === 'dark';
+        let currentContentId = null;
+        let selectedSeasonIndex = 0;
+        let isPublished = localStorage.getItem('isPublished') === 'true';
+
+        // =============================================
+        // DOM REFS
+        // =============================================
+        const animeGrid = document.getElementById('animeGrid');
+        const cartoonGrid = document.getElementById('cartoonGrid');
+        const animeCount = document.getElementById('animeCount');
+        const cartoonCount = document.getElementById('cartoonCount');
+        const adminPanel = document.getElementById('adminPanel');
+        const loginOverlay = document.getElementById('loginOverlay');
+        const playerModal = document.getElementById('playerModal');
+        const playerFrame = document.getElementById('playerFrame');
+        const playerTitle = document.getElementById('playerTitle');
+        const toast = document.getElementById('toast');
+        const manageList = document.getElementById('manageList');
+        const contentModal = document.getElementById('contentModal');
+        const modalBody = document.getElementById('modalBody');
+        const modalTitle = document.getElementById('modalTitle');
+        const adminContentModal = document.getElementById('adminContentModal');
+        const adminModalBody = document.getElementById('adminModalBody');
+        const adminModalTitle = document.getElementById('adminModalTitle');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+
+        // =============================================
+        // THEME
+        // =============================================
+        function applyTheme() {
+            if (isDark) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i>';
             } else {
-                input.type = 'password'
-                icon.classList.remove('fa-eye-slash')
-                icon.classList.add('fa-eye')
+                document.documentElement.removeAttribute('data-theme');
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-moon"></i>';
             }
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+        applyTheme();
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            isDark = !isDark;
+            applyTheme();
+            showToast(isDark ? 'تم تفعيل الوضع الليلي' : 'تم تفعيل الوضع النهاري', 'success');
+        });
+
+        document.getElementById('toggleThemeBtn').addEventListener('click', () => {
+            isDark = !isDark;
+            applyTheme();
+            showToast(isDark ? 'تم تفعيل الوضع الليلي' : 'تم تفعيل الوضع النهاري', 'success');
+        });
+
+        // =============================================
+        // TOAST
+        // =============================================
+        function showToast(msg, type = 'success') {
+            toast.textContent = msg;
+            toast.className = 'toast show ' + type;
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        function switchTab(tab) {
-            hideMessage()
-            
-            const tabs = document.querySelectorAll('.tab-btn')
-            const forms = document.querySelectorAll('.auth-form')
-            
-            tabs.forEach(t => t.classList.remove('active'))
-            forms.forEach(f => f.classList.remove('active'))
-            
-            if (tab === 'login') {
-                tabs[0].classList.add('active')
-                document.getElementById('loginForm').classList.add('active')
+        // =============================================
+        // RENDER
+        // =============================================
+        function render() {
+            let animeList = contents.filter(c => c.type === 'anime');
+            let cartoonList = contents.filter(c => c.type === 'cartoon');
+
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (query) {
+                animeList = animeList.filter(c => c.title.toLowerCase().includes(query));
+                cartoonList = cartoonList.filter(c => c.title.toLowerCase().includes(query));
+            }
+
+            animeCount.textContent = `(${animeList.length})`;
+            if (animeList.length === 0) {
+                animeGrid.innerHTML = `<div class="empty-state"><i class="fas fa-film"></i><p>لا يوجد أنمي</p></div>`;
             } else {
-                tabs[1].classList.add('active')
-                document.getElementById('registerForm').classList.add('active')
-            }
-        }
-
-        function showForgotPassword() {
-            showMessage('📧 سيتم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني', 'info')
-        }
-
-        // ============================================================
-        // وظيفة تسجيل الدخول
-        // ============================================================
-        async function handleLogin() {
-            const email = document.getElementById('loginEmail').value.trim()
-            const password = document.getElementById('loginPassword').value
-            const btn = document.getElementById('loginBtn')
-            const remember = document.getElementById('rememberMe').checked
-
-            hideMessage()
-
-            if (!email || !password) {
-                showMessage('⚠️ يرجى إدخال البريد الإلكتروني وكلمة المرور', 'error')
-                return
+                animeGrid.innerHTML = animeList.map(item => `
+                    <div class="card-item" data-id="${item.id}">
+                        <div class="thumb">
+                            ${item.image && item.image.trim() !== '' ? `<img src="${item.image}" alt="${item.title}" onerror="this.style.display='none';this.parentElement.querySelector('.play-icon').style.display='flex'">` : ''}
+                            <i class="fas fa-play play-icon" style="${item.image && item.image.trim() !== '' ? 'display:none;' : 'display:flex;'}"></i>
+                        </div>
+                        <div class="info">
+                            <h4>${item.title}</h4>
+                            <span class="type-badge anime">أنمي</span>
+                        </div>
+                    </div>
+                `).join('');
             }
 
-            btn.disabled = true
-            btn.innerHTML = '<i class="fas fa-spinner spinner"></i> جاري الدخول...'
+            cartoonCount.textContent = `(${cartoonList.length})`;
+            if (cartoonList.length === 0) {
+                cartoonGrid.innerHTML = `<div class="empty-state"><i class="fas fa-crown"></i><p>لا يوجد كرتون</p></div>`;
+            } else {
+                cartoonGrid.innerHTML = cartoonList.map(item => `
+                    <div class="card-item" data-id="${item.id}">
+                        <div class="thumb">
+                            ${item.image && item.image.trim() !== '' ? `<img src="${item.image}" alt="${item.title}" onerror="this.style.display='none';this.parentElement.querySelector('.play-icon').style.display='flex'">` : ''}
+                            <i class="fas fa-play play-icon" style="${item.image && item.image.trim() !== '' ? 'display:none;' : 'display:flex;'}"></i>
+                        </div>
+                        <div class="info">
+                            <h4>${item.title}</h4>
+                            <span class="type-badge cartoon">كرتون</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
 
-            try {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                })
+            document.querySelectorAll('#animeGrid .card-item, #cartoonGrid .card-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    const id = parseInt(el.dataset.id);
+                    const item = contents.find(c => c.id === id);
+                    if (item) openContentViewer(item);
+                });
+            });
 
-                if (error) {
-                    if (error.message.includes('Invalid login credentials')) {
-                        showMessage('❌ البريد الإلكتروني أو كلمة المرور غير صحيحة', 'error')
-                    } else if (error.message.includes('Email not confirmed')) {
-                        showMessage('⚠️ يرجى تأكيد البريد الإلكتروني أولاً', 'error')
+            renderManage();
+            updatePublishStatus();
+        }
+
+        // =============================================
+        // USER CONTENT VIEWER
+        // =============================================
+        function openContentViewer(item) {
+            modalTitle.textContent = `📺 ${item.title}`;
+            let html = '';
+
+            if (!item.seasons || item.seasons.length === 0) {
+                html = `<div class="empty-state"><i class="fas fa-layer-group"></i><p>لا توجد مواسم</p></div>`;
+            } else {
+                html += `<div class="season-horizontal">`;
+                item.seasons.forEach((season, idx) => {
+                    const active = idx === selectedSeasonIndex ? 'active' : '';
+                    html += `
+                        <div class="season-card ${active}" onclick="selectSeason(${item.id}, ${idx})">
+                            <div class="season-num">${season.number}</div>
+                            <div class="season-label">موسم</div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+
+                const selectedSeason = item.seasons[selectedSeasonIndex] || item.seasons[0];
+                html += `<div class="episode-list">`;
+                if (selectedSeason && selectedSeason.episodes && selectedSeason.episodes.length > 0) {
+                    selectedSeason.episodes.forEach(ep => {
+                        html += `
+                            <div class="episode-item-display" onclick="playEpisode('${ep.url}')">
+                                <div class="ep-info">
+                                    <div class="ep-title">${ep.title || `حلقة ${ep.number}`}</div>
+                                    <div class="ep-duration">حلقة ${ep.number}</div>
+                                </div>
+                                <button class="ep-play" onclick="event.stopPropagation(); playEpisode('${ep.url}')"><i class="fas fa-play"></i> تشغيل</button>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += `<p style="color:var(--text-secondary);font-size:0.85rem;padding:12px;text-align:center;">لا توجد حلقات في هذا الموسم</p>`;
+                }
+                html += `</div>`;
+            }
+
+            modalBody.innerHTML = html;
+            contentModal.classList.add('active');
+        }
+
+        function selectSeason(contentId, idx) {
+            selectedSeasonIndex = idx;
+            const item = contents.find(c => c.id === contentId);
+            if (item) openContentViewer(item);
+        }
+
+        // =============================================
+        // ADMIN CONTENT MANAGER
+        // =============================================
+        function openAdminContentManager(item) {
+            currentContentId = item.id;
+            adminModalTitle.textContent = `⚙️ إدارة ${item.title}`;
+            let html = `
+                <div style="margin-bottom:12px;">
+                    <h4 style="color:var(--text-secondary);font-size:0.85rem;"><i class="fas fa-layer-group"></i> المواسم</h4>
+                    <div id="seasonsList">
+            `;
+            if (!item.seasons || item.seasons.length === 0) {
+                html += `<p style="color:var(--text-secondary);font-size:0.8rem;">لا توجد مواسم</p>`;
+            } else {
+                item.seasons.forEach((season, si) => {
+                    html += `
+                        <div class="season-item">
+                            <div class="s-title">الموسم ${season.number}</div>
+                            <div class="s-actions">
+                                <button onclick="editSeason(${item.id}, ${si})" class="admin-btn admin-btn-warning admin-btn-sm"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteSeason(${item.id}, ${si})" class="admin-btn admin-btn-danger admin-btn-sm"><i class="fas fa-trash"></i></button>
+                                <button onclick="toggleEpisodes(${item.id}, ${si})" class="admin-btn admin-btn-primary admin-btn-sm"><i class="fas fa-chevron-down"></i></button>
+                            </div>
+                        </div>
+                        <div id="episodes_${item.id}_${si}" style="margin-right:16px;margin-bottom:8px;display:none;">
+                            <h5 style="font-size:0.75rem;color:var(--text-secondary);margin:6px 0;">الحلقات</h5>
+                    `;
+                    if (season.episodes && season.episodes.length > 0) {
+                        season.episodes.forEach((ep, ei) => {
+                            html += `
+                                <div class="episode-item">
+                                    <div class="e-title">حلقة ${ep.number}: ${ep.title || ''}</div>
+                                    <div class="e-actions">
+                                        <button onclick="playEpisode('${ep.url}')" class="play-btn"><i class="fas fa-play"></i></button>
+                                        <button onclick="editEpisode(${item.id}, ${si}, ${ei})" class="admin-btn admin-btn-warning admin-btn-sm"><i class="fas fa-edit"></i></button>
+                                        <button onclick="deleteEpisode(${item.id}, ${si}, ${ei})" class="admin-btn admin-btn-danger admin-btn-sm"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </div>
+                            `;
+                        });
                     } else {
-                        showMessage('❌ ' + error.message, 'error')
+                        html += `<p style="color:var(--text-secondary);font-size:0.7rem;">لا توجد حلقات</p>`;
                     }
-                    btn.disabled = false
-                    btn.innerHTML = '<i class="fas fa-arrow-left"></i> دخول'
-                    return
+                    html += `
+                            <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+                                <input class="admin-input" id="epTitle_${item.id}_${si}" placeholder="عنوان الحلقة" style="flex:1;min-width:80px;padding:6px 10px;font-size:0.75rem;">
+                                <input class="admin-input" id="epUrl_${item.id}_${si}" placeholder="رابط الفيديو" style="flex:2;min-width:120px;padding:6px 10px;font-size:0.75rem;">
+                                <button onclick="addEpisode(${item.id}, ${si})" class="admin-btn admin-btn-success admin-btn-sm"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            html += `
+                    </div>
+                    <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+                        <input class="admin-input" id="newSeasonNum" placeholder="رقم الموسم" style="flex:1;min-width:60px;padding:6px 10px;font-size:0.75rem;" type="number">
+                        <button onclick="addSeason(${item.id})" class="admin-btn admin-btn-primary admin-btn-sm"><i class="fas fa-plus"></i> إضافة موسم</button>
+                    </div>
+                </div>
+            `;
+            adminModalBody.innerHTML = html;
+            adminContentModal.classList.add('active');
+        }
+
+        // =============================================
+        // SEASONS CRUD
+        // =============================================
+        function addSeason(contentId) {
+            const num = parseInt(document.getElementById('newSeasonNum').value);
+            if (!num || num < 1) { showToast('أدخل رقم موسم صحيح', 'error'); return; }
+            const item = contents.find(c => c.id === contentId);
+            if (!item) return;
+            if (!item.seasons) item.seasons = [];
+            if (item.seasons.find(s => s.number === num)) {
+                showToast('هذا الموسم موجود مسبقاً', 'error');
+                return;
+            }
+            item.seasons.push({ number: num, episodes: [] });
+            item.seasons.sort((a, b) => a.number - b.number);
+            saveData();
+            render();
+            openAdminContentManager(item);
+            showToast('تم إضافة الموسم');
+        }
+
+        function deleteSeason(contentId, si) {
+            if (!confirm('حذف الموسم وجميع حلقاته؟')) return;
+            const item = contents.find(c => c.id === contentId);
+            if (!item) return;
+            item.seasons.splice(si, 1);
+            if (selectedSeasonIndex >= item.seasons.length) selectedSeasonIndex = 0;
+            saveData();
+            render();
+            openAdminContentManager(item);
+            showToast('تم حذف الموسم', 'error');
+        }
+
+        function editSeason(contentId, si) {
+            const item = contents.find(c => c.id === contentId);
+            if (!item) return;
+            const newNum = prompt('رقم الموسم الجديد:', item.seasons[si].number);
+            if (newNum && !isNaN(newNum) && parseInt(newNum) > 0) {
+                const num = parseInt(newNum);
+                if (item.seasons.find(s => s.number === num && s !== item.seasons[si])) {
+                    showToast('رقم الموسم مستخدم', 'error');
+                    return;
                 }
-
-                if (remember) {
-                    localStorage.setItem('devflix_session', JSON.stringify(data.session))
-                }
-
-                localStorage.setItem('devflix_user', JSON.stringify(data.user))
-
-                showMessage('✅ تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success')
-
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html'
-                }, 800)
-
-            } catch (error) {
-                showMessage('❌ حدث خطأ غير متوقع', 'error')
-                btn.disabled = false
-                btn.innerHTML = '<i class="fas fa-arrow-left"></i> دخول'
+                item.seasons[si].number = num;
+                item.seasons.sort((a, b) => a.number - b.number);
+                saveData();
+                render();
+                openAdminContentManager(item);
+                showToast('تم التعديل');
             }
         }
 
-        // ============================================================
-        // وظيفة التسجيل المحسنة
-        // ============================================================
-        async function handleRegister() {
-            const name = document.getElementById('registerName').value.trim()
-            const email = document.getElementById('registerEmail').value.trim()
-            const password = document.getElementById('registerPassword').value
-            const confirm = document.getElementById('registerConfirm').value
-            const btn = document.getElementById('registerBtn')
+        function toggleEpisodes(contentId, si) {
+            const el = document.getElementById(`episodes_${contentId}_${si}`);
+            if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
 
-            hideMessage()
+        // =============================================
+        // EPISODES CRUD
+        // =============================================
+        function addEpisode(contentId, si) {
+            const title = document.getElementById(`epTitle_${contentId}_${si}`).value.trim();
+            const url = document.getElementById(`epUrl_${contentId}_${si}`).value.trim();
+            if (!url) { showToast('رابط الفيديو مطلوب', 'error'); return; }
+            const item = contents.find(c => c.id === contentId);
+            if (!item || !item.seasons[si]) return;
+            const season = item.seasons[si];
+            const num = season.episodes.length + 1;
+            season.episodes.push({ number: num, title: title || `حلقة ${num}`, url });
+            saveData();
+            render();
+            openAdminContentManager(item);
+            showToast('تم إضافة الحلقة');
+        }
 
-            // التحقق من الحقول
-            if (!name || !email || !password || !confirm) {
-                showMessage('⚠️ يرجى ملء جميع الحقول', 'error')
-                return
+        function deleteEpisode(contentId, si, ei) {
+            if (!confirm('حذف الحلقة؟')) return;
+            const item = contents.find(c => c.id === contentId);
+            if (!item || !item.seasons[si]) return;
+            item.seasons[si].episodes.splice(ei, 1);
+            item.seasons[si].episodes.forEach((ep, idx) => ep.number = idx + 1);
+            saveData();
+            render();
+            openAdminContentManager(item);
+            showToast('تم حذف الحلقة', 'error');
+        }
+
+        function editEpisode(contentId, si, ei) {
+            const item = contents.find(c => c.id === contentId);
+            if (!item || !item.seasons[si]) return;
+            const ep = item.seasons[si].episodes[ei];
+            const newTitle = prompt('عنوان الحلقة:', ep.title);
+            if (newTitle !== null) ep.title = newTitle || `حلقة ${ep.number}`;
+            const newUrl = prompt('رابط الفيديو:', ep.url);
+            if (newUrl !== null && newUrl.trim()) ep.url = newUrl.trim();
+            saveData();
+            render();
+            openAdminContentManager(item);
+            showToast('تم التعديل');
+        }
+
+        // =============================================
+        // PLAY EPISODE
+        // =============================================
+        function playEpisode(url) {
+            if (!url) { showToast('لا يوجد رابط', 'error'); return; }
+            let videoUrl = url;
+            if (videoUrl.includes('youtube.com/watch?v=') || videoUrl.includes('youtu.be/')) {
+                let vid = videoUrl.split('v=')[1]?.split('&')[0] || videoUrl.split('/').pop();
+                videoUrl = `https://www.youtube.com/embed/${vid}?autoplay=1`;
+            } else if (videoUrl.includes('youtube.com/embed/')) {
+                videoUrl += '?autoplay=1';
             }
+            playerTitle.textContent = 'تشغيل الحلقة';
+            playerFrame.src = videoUrl;
+            playerModal.classList.add('active');
+            contentModal.classList.remove('active');
+            adminContentModal.classList.remove('active');
+        }
 
-            if (name.length < 2) {
-                showMessage('⚠️ الاسم يجب أن يكون حرفين على الأقل', 'error')
-                return
+        document.getElementById('closePlayer').addEventListener('click', () => {
+            playerModal.classList.remove('active');
+            playerFrame.src = '';
+        });
+
+        // =============================================
+        // MANAGE LIST
+        // =============================================
+        function renderManage() {
+            if (contents.length === 0) {
+                manageList.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>لا يوجد محتوى</p></div>`;
+                return;
             }
+            manageList.innerHTML = contents.map(item => `
+                <div class="manage-item">
+                    <div class="info">
+                        <div class="title">${item.title}</div>
+                        <div class="sub">${item.type === 'anime' ? 'أنمي' : 'كرتون'}</div>
+                    </div>
+                    <div class="actions">
+                        <button onclick="openAdminContentManager(contents.find(c=>c.id===${item.id}))" class="admin-btn admin-btn-primary admin-btn-sm"><i class="fas fa-layer-group"></i></button>
+                        <button onclick="editContent(${item.id})" class="admin-btn admin-btn-warning admin-btn-sm"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteContent(${item.id})" class="admin-btn admin-btn-danger admin-btn-sm"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-            if (!email.includes('@') || !email.includes('.')) {
-                showMessage('⚠️ يرجى إدخال بريد إلكتروني صحيح', 'error')
-                return
-            }
+        // =============================================
+        // CRUD
+        // =============================================
+        function addContent(title, image, type) {
+            const id = Date.now();
+            contents.push({ id, title, image, type, seasons: [] });
+            saveData();
+            render();
+            showToast('✅ تم الإضافة بنجاح');
+        }
 
-            if (password.length < 6) {
-                showMessage('⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error')
-                return
-            }
+        function deleteContent(id) {
+            if (!confirm('حذف هذا المحتوى وجميع مواسمه وحلقاته؟')) return;
+            contents = contents.filter(c => c.id !== id);
+            saveData();
+            render();
+            showToast('🗑️ تم الحذف');
+        }
 
-            if (password !== confirm) {
-                showMessage('⚠️ كلمة المرور غير متطابقة', 'error')
-                return
-            }
+        function editContent(id) {
+            const item = contents.find(c => c.id === id);
+            if (!item) return;
+            const newTitle = prompt('العنوان الجديد:', item.title);
+            if (newTitle !== null && newTitle.trim()) item.title = newTitle.trim();
+            const newImage = prompt('رابط الصورة الجديد:', item.image || '');
+            if (newImage !== null) item.image = newImage.trim();
+            saveData();
+            render();
+            showToast('✏️ تم التعديل');
+        }
 
-            btn.disabled = true
-            btn.innerHTML = '<i class="fas fa-spinner spinner"></i> جاري التسجيل...'
+        function resetData() {
+            if (!confirm('حذف جميع البيانات؟')) return;
+            contents = [];
+            saveData();
+            render();
+            showToast('🗑️ تم إعادة التعيين');
+        }
 
-            try {
-                // أولاً: التحقق من وجود البريد في جدول users
-                const { data: existingUser, error: checkError } = await supabaseClient
-                    .from('users')
-                    .select('email')
-                    .eq('email', email)
-                    .maybeSingle()
+        // =============================================
+        // PUBLISH - حفظ ونشر البيانات
+        // =============================================
+        function publishUpdates() {
+            saveData();
+            isPublished = true;
+            localStorage.setItem('isPublished', 'true');
+            localStorage.setItem('lastPublish', new Date().toLocaleString('ar'));
+            updatePublishStatus();
+            showToast('✅ تم حفظ ونشر التحديثات بنجاح!', 'success');
+            loadData();
+            render();
+        }
 
-                if (existingUser) {
-                    showMessage('⚠️ هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول', 'error')
-                    btn.disabled = false
-                    btn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب'
-                    setTimeout(() => {
-                        switchTab('login')
-                        document.getElementById('loginEmail').value = email
-                    }, 1500)
-                    return
-                }
-
-                // محاولة التسجيل في Supabase Auth
-                const { data, error } = await supabaseClient.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: {
-                        data: {
-                            full_name: name,
-                            role: 'user'
-                        }
-                    }
-                })
-
-                if (error) {
-                    if (error.message.includes('User already registered')) {
-                        showMessage('⚠️ هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول', 'error')
-                        setTimeout(() => {
-                            switchTab('login')
-                            document.getElementById('loginEmail').value = email
-                        }, 1500)
-                    } else {
-                        showMessage('❌ ' + error.message, 'error')
-                    }
-                    btn.disabled = false
-                    btn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب'
-                    return
-                }
-
-                // إذا نجح التسجيل، إضافة المستخدم إلى جدول users
-                if (data.user) {
-                    const { error: insertError } = await supabaseClient
-                        .from('users')
-                        .insert({
-                            id: data.user.id,
-                            email: email,
-                            full_name: name,
-                            role: 'user'
-                        })
-
-                    if (insertError) {
-                        console.error('خطأ في إضافة المستخدم:', insertError)
-                    }
-                }
-
-                showMessage('✅ تم التسجيل بنجاح! يمكنك الدخول الآن', 'success')
-
-                // تفريغ الحقول
-                document.getElementById('registerName').value = ''
-                document.getElementById('registerEmail').value = ''
-                document.getElementById('registerPassword').value = ''
-                document.getElementById('registerConfirm').value = ''
-
-                // التبديل إلى تسجيل الدخول مع تعبئة البريد
-                setTimeout(() => {
-                    switchTab('login')
-                    document.getElementById('loginEmail').value = email
-                    showMessage('✅ تم التسجيل بنجاح! أدخل كلمة المرور للدخول', 'success')
-                }, 1000)
-
-                btn.disabled = false
-                btn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب'
-
-            } catch (error) {
-                console.error('خطأ:', error)
-                showMessage('❌ حدث خطأ غير متوقع: ' + error.message, 'error')
-                btn.disabled = false
-                btn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب'
+        function updatePublishStatus() {
+            if (isPublished) {
+                statusDot.className = 'dot published';
+                const lastPublish = localStorage.getItem('lastPublish') || 'اليوم';
+                statusText.textContent = `تم النشر (${lastPublish})`;
+            } else {
+                statusDot.className = 'dot draft';
+                statusText.textContent = 'لم يتم النشر بعد';
             }
         }
 
-        // ============================================================
-        // دعم Enter key
-        // ============================================================
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const loginForm = document.getElementById('loginForm')
-                const registerForm = document.getElementById('registerForm')
-                if (loginForm.classList.contains('active')) {
-                    handleLogin()
-                } else if (registerForm.classList.contains('active')) {
-                    handleRegister()
+        document.getElementById('publishBtn').addEventListener('click', publishUpdates);
+
+        // =============================================
+        // ADMIN LOGIN
+        // =============================================
+        let adminClickCount = 0;
+
+        function secureLogin(email, password) {
+            return email === CREDS.email && password === CREDS.password;
+        }
+
+        document.getElementById('appTitle').addEventListener('click', () => {
+            adminClickCount++;
+            if (adminClickCount >= 3) {
+                adminClickCount = 0;
+                if (adminPanel.classList.contains('active')) {
+                    adminPanel.classList.remove('active');
+                    showToast('تم إغلاق لوحة الإدارة');
+                } else {
+                    loginOverlay.classList.add('active');
+                    document.getElementById('loginEmail').value = '';
+                    document.getElementById('loginPassword').value = '';
                 }
             }
-        })
+            clearTimeout(window._clickTimer);
+            window._clickTimer = setTimeout(() => adminClickCount = 0, 2000);
+        });
 
-        // ============================================================
-        // التحقق من الجلسة عند التحميل
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', async () => {
-            // تعبئة البريد الإلكتروني للمدمن
-            document.getElementById('loginEmail').value = 'sajadsarmd200@gmail.com'
-            
-            // التحقق من وجود جلسة مخزنة
-            const session = localStorage.getItem('devflix_session')
-            if (session) {
-                try {
-                    const { data, error } = await supabaseClient.auth.setSession(JSON.parse(session))
-                    if (!error && data.user) {
-                        window.location.href = 'dashboard.html'
-                        return
-                    }
-                } catch (e) {
-                    console.log('جلسة منتهية')
+        document.getElementById('closeLogin').addEventListener('click', () => {
+            loginOverlay.classList.remove('active');
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+        });
+
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value.trim();
+
+            if (secureLogin(email, pass)) {
+                loginOverlay.classList.remove('active');
+                adminPanel.classList.add('active');
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                showToast('مرحباً في لوحة الإدارة');
+            } else {
+                loginAttempts++;
+                showToast('البريد أو كلمة المرور غير صحيحة', 'error');
+                if (loginAttempts >= 3) {
+                    document.getElementById('loginEmail').value = '';
+                    document.getElementById('loginPassword').value = '';
+                    loginAttempts = 0;
                 }
             }
+        });
 
-            // التحقق من جلسة Supabase الحالية
+        document.getElementById('closeAdmin').addEventListener('click', () => {
+            adminPanel.classList.remove('active');
+            showToast('تم إغلاق لوحة الإدارة');
+        });
+
+        // =============================================
+        // ADMIN TABS
+        // =============================================
+        document.querySelectorAll('.admin-tabs button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const tab = btn.dataset.tab;
+                document.querySelectorAll('#adminPanel .admin-section').forEach(s => s.classList.add('hidden'));
+                document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+            });
+        });
+
+        // =============================================
+        // ADD CONTENT
+        // =============================================
+        document.getElementById('addContentBtn').addEventListener('click', () => {
+            const title = document.getElementById('newTitle').value.trim();
+            const image = document.getElementById('newImage').value.trim();
+            const type = document.getElementById('newType').value;
+            if (!title) { showToast('⚠️ العنوان مطلوب', 'error'); return; }
+            addContent(title, image, type);
+            document.getElementById('newTitle').value = '';
+            document.getElementById('newImage').value = '';
+        });
+
+        // =============================================
+        // SEARCH
+        // =============================================
+        document.getElementById('searchBtn').addEventListener('click', render);
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') render();
+        });
+
+        // =============================================
+        // BOTTOM NAV
+        // =============================================
+        document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const section = btn.dataset.section;
+                const animeSection = document.getElementById('animeSection');
+                const cartoonSection = document.getElementById('cartoonSection');
+
+                if (section === 'home') {
+                    animeSection.style.display = 'block';
+                    cartoonSection.style.display = 'block';
+                } else if (section === 'anime') {
+                    animeSection.style.display = 'block';
+                    cartoonSection.style.display = 'none';
+                } else if (section === 'cartoon') {
+                    animeSection.style.display = 'none';
+                    cartoonSection.style.display = 'block';
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // =============================================
+        // SAVE / LOAD - قاعدة بيانات فارغة
+        // =============================================
+        function saveData() {
+            localStorage.setItem('contents', JSON.stringify(contents));
+            console.log('✅ تم حفظ البيانات:', contents);
+        }
+
+        function loadData() {
             try {
-                const { data: { user } } = await supabaseClient.auth.getUser()
-                if (user) {
-                    window.location.href = 'dashboard.html'
+                const c = localStorage.getItem('contents');
+                if (c) {
+                    const parsed = JSON.parse(c);
+                    if (Array.isArray(parsed)) {
+                        contents = parsed;
+                        console.log('✅ تم تحميل البيانات:', contents);
+                        return;
+                    }
                 }
             } catch (e) {
-                console.log('لا توجد جلسة نشطة')
+                console.log('⚠️ خطأ في تحميل البيانات');
             }
-        })
+            contents = [];
+            saveData();
+            console.log('🗄️ قاعدة البيانات فارغة');
+        }
+
+        document.getElementById('resetDataBtn').addEventListener('click', resetData);
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            contentModal.classList.remove('active');
+        });
+        document.getElementById('closeAdminModalBtn').addEventListener('click', () => {
+            adminContentModal.classList.remove('active');
+            render();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (playerModal.classList.contains('active')) {
+                    playerModal.classList.remove('active');
+                    playerFrame.src = '';
+                }
+                if (loginOverlay.classList.contains('active')) {
+                    loginOverlay.classList.remove('active');
+                    document.getElementById('loginEmail').value = '';
+                    document.getElementById('loginPassword').value = '';
+                }
+                if (contentModal.classList.contains('active')) {
+                    contentModal.classList.remove('active');
+                }
+                if (adminContentModal.classList.contains('active')) {
+                    adminContentModal.classList.remove('active');
+                }
+            }
+        });
+
+        // =============================================
+        // INIT
+        // =============================================
+        loadData();
+        render();
+        updatePublishStatus();
+
+        console.log('✅ ديف كرتونجاهز!');
+        console.log('🔒 تم منع F12 وأدوات المطور');
+        console.log('🗄️ قاعدة البيانات فارغة - لا يوجد أعمال وهمية');
+        console.log('🔒 بيانات الدخول مشفرة وآمنة');
+        console.log('🛠️ اضغط 3 مرات على اسم التطبيق لفتح الإدارة');
+        console.log('📺 يمكنك إضافة أعمال جديدة من لوحة الإدارة');
+        console.log('💾 زر النشر يحفظ البيانات في قاعدة البيانات');
     </script>
 </body>
 </html>
